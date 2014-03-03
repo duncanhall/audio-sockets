@@ -10,18 +10,13 @@
             var socket = io.connect('http://22.155.0.8:8000');
 
             socket.on("connect", function() {
-		log("Connected as client");
+		socket.emit("id", "slave");
             });
 
 	    socket.on("msg", function(data) {
 	        log('Msg: ' + data);
 	    });
         }			
-
-	function sendCommand()
-	{
-		socket.emit("cmd-client", "Press the button");
-	}
 
         function log(msg)
         {
@@ -31,8 +26,7 @@
     </script>		
 	</head>
 	<body onload="onload();">
-		<h1>Websockets Client</h1>
-		<input type="button" value="Press Me" onclick="sendCommand();" />
+		<h1>Websockets Demo </h1>
 		<div id="output"></div>
 	</body>
 
