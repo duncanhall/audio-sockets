@@ -1,0 +1,33 @@
+<html>
+  <head>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+
+        function onload()
+	{			
+	    log('Init...');		
+            
+            var socket = io.connect('http://22.155.0.8:8000');
+
+            socket.on("connect", function() {
+		socket.emit("msg", "Hello!!");
+            });
+
+	    socket.on("msg", function(data) {
+	        log('Msg: ' + data);
+	    });
+        }			
+
+        function log(msg)
+        {
+            console.log(msg);
+        }
+
+    </script>		
+	</head>
+	<body onload="onload();">
+		<h1>Websockets demo - </h1>
+		<div id="output"></div>
+	</body>
+
+</html>
