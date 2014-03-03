@@ -12,12 +12,14 @@ app.use("/", express.static(__dirname + "/../client/"));
 io.sockets.on('connection', function (socket) {
 	
 	socket.on('msg', function(data) {
-		
-		if (socket.id != slaveID)
-		{
-			io.sockets.socket(slaveID).emit(data);
-		}
+		//
 	});	
+
+	socket.on('cmd-client', function(cmd) {
+	
+		io.sockets.socket(slaveID).emit('cmd-client', cmd);
+		
+	});
 
 	socket.on('id', function(data) {
 		if (data == 'slave')

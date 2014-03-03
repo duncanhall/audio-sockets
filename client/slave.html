@@ -3,24 +3,28 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
 
+	var output = null;
+	var socket = null;
+
         function onload()
 	{			
-	    log('Init...');		
-            
-            var socket = io.connect('http://22.155.0.8:8000');
+	    output = document.getElementById('output');
+            socket = io.connect('http://22.155.0.8:8000');
 
             socket.on("connect", function() {
+		log('Connected');
 		socket.emit("id", "slave");
             });
 
-	    socket.on("msg", function(data) {
-	        log('Msg: ' + data);
+	    socket.on("cmd-client", function(data) {
+	        log('CMD: ' + data);
 	    });
         }			
 
         function log(msg)
         {
-            console.log(msg);
+	    console.log(msg);
+            output.innerHTML = output.innerHTML + 'Press\n';
         }
 
     </script>		

@@ -3,11 +3,13 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
 
+        var socket = null;        
+
         function onload()
 	{			
 	    log('Init...');		
             
-            var socket = io.connect('http://22.155.0.8:8000');
+            socket = io.connect('http://22.155.0.8:8000');
 
             socket.on("connect", function() {
 		log("Connected as client");
