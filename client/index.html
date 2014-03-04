@@ -1,5 +1,6 @@
 <html>
   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="/socket.io/socket.io.js"></script>
     <script>
 
@@ -20,9 +21,19 @@
 	    });
         }			
 
-	function sendCommand()
+	function send(data)
 	{
-		socket.emit("cmd-client", "Press the button");
+	    socket.emit("cmd-client", data);
+	}
+
+	function sendDown()
+	{
+            send('down');
+	}
+
+	function sendUp()
+	{
+	    send('up');
 	}
 
         function log(msg)
@@ -31,11 +42,26 @@
         }
 
     </script>		
+
+
+    <style>
+
+      #bigButton
+      {
+        width: 200px;
+        height: 200px;
+        background: #FF0000;
+        margin: 50px auto 0 auto;
+      }
+
+    </style>
+
+
 	</head>
 	<body onload="onload();">
 		<h1>Websockets Client</h1>
-		<input type="button" value="Press Me" onclick="sendCommand();" />
 		<div id="output"></div>
+		<div id="bigButton" onTouchStart="sendDown(this);" onTouchEnd="sendUp(this);" ></div>
 	</body>
 
 </html>

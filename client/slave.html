@@ -5,10 +5,12 @@
 
 	var output = null;
 	var socket = null;
+        var reactor = null;
 
         function onload()
 	{			
 	    output = document.getElementById('output');
+            reactor = document.getElementById('reactor');
             socket = io.connect('http://22.155.0.8:8000');
 
             socket.on("connect", function() {
@@ -18,20 +20,44 @@
 
 	    socket.on("cmd-client", function(data) {
 	        log('CMD: ' + data);
+                if (data == "down")
+		{
+		    reactor.style.visibility = 'visible';
+		}
+		else if (data == "up")
+		{
+		    reactor.style.visibility = 'hidden';
+		}
+
 	    });
         }			
 
         function log(msg)
         {
 	    console.log(msg);
-            output.innerHTML = output.innerHTML + 'Press\n';
+            //output.innerHTML = output.innerHTML + 'Press\n';
         }
 
-    </script>		
-	</head>
-	<body onload="onload();">
-		<h1>Websockets Demo </h1>
-		<div id="output"></div>
-	</body>
+    </script>
+
+    <style>
+
+      #reactor
+      {
+        width: 200px;
+        height: 200px;
+        background: #FF0000;
+        margin: 50px auto 0 auto;
+        visibility: hidden;
+      }
+
+    </style>
+		
+    </head>
+    <body onload="onload();">
+      <h1>Websockets Demo </h1>
+      <div id="output"></div>
+      <div id="reactor"></div>
+    </body>
 
 </html>
