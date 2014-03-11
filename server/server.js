@@ -17,7 +17,7 @@ io.sockets.on('connection', function (socket) {
 
 	socket.on('cmd-client', function(cmd) {
 	
-		io.sockets.socket(slaveID).emit('cmd-client', cmd);
+		io.sockets.socket(slaveID).emit('cmd-client', String(socket.id) + ":" + cmd);
 		
 	});
 

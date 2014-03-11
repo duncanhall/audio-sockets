@@ -1,6 +1,7 @@
 <html>
   <head>
     <script src="/socket.io/socket.io.js"></script>
+    <script src="js/Class.js"></script>
     <script>
 
       var output = null;
@@ -9,11 +10,11 @@
 
       function onload()
       {			
+
         output = document.getElementById('output');
-        reactor = document.getElementById('reactor');
         socket = io.connect('http://22.155.0.3:8000');
 
-        reactor.style.webkitTransform = "scale(0)";
+        connections = [];
 
         socket.on("connect", function() {
 
@@ -24,19 +25,48 @@
 
         socket.on("cmd-client", function(data) {
 
-          if (data == "down")
+          var delim = data.indexOf(":");
+          var id = data.substr(0, delim);
+          var body = data.substr(delim + 1);
+          var connection = getConnection(id);
+
+          if (body == "down")
           {
-              reactor.style.webkitTransform = "scale(1)";
-              reactor.className = 'growing';
+              connection.style.webkitTransform = "scale(1)";
+              connection.className = 'responder growing';
           }
-          else if (data == "up")
-          {
-              reactor.style.webkitTransform = "scale(0)";
-              reactor.className = 'shrinking';
+          else if (body == "up")
+          {       
+              connection.style.webkitTransform = "scale(0)";
+              connection.className = 'responder shrinking';
           }
 
         });
         
+        function getConnection (id) 
+        {
+            var responder = connections[id];
+
+            if (responder == null)
+            {
+              responder = createResponder();
+              connections[id] = responder;
+            }
+
+            return responder;
+        }
+
+        function createResponder ()
+        {
+            var responder = document.createElement('div');
+            responder.style.webkitTransform = "scale(0)";
+            responder.className = 'responder';
+            output.appendChild(responder);
+            responder.style.marginLeft = String(connections.length * 200) + "px";
+
+            return responder;
+        }
+
       }			
 
       function log(msg)
@@ -45,92 +75,12 @@
       }
 
     </script>
+		<link rel="stylesheet" href="css/slave.css" />
 
-    <style>
-
-      #reactor
-      {
-        width: 200px;
-        height: 200px;
-        border-radius: 50%;
-        background: #FF0000;
-        margin: 50px auto 0 auto;
-      }
-
-  .growing
-  {
-    animation: grow 1s;
-    -webkit-animation: grow 1s; 
-  }
-
-  .shrinking
-  {
-    animation: shrink 1s;
-    -webkit-animation: shrink 1s; 
-  }
-
-  @keyframes grow
-  {
-    from {
-      -ms-transform: scale(0,0); 
-      -webkit-transform: scale(0,0);
-      transform: scale(0,0);        
-    }
-    to {
-      -ms-transform: scale(1,1); 
-      -webkit-transform: scale(1,1); 
-      transform: scale(1,1);      
-    }
-  }
-
-  @-webkit-keyframes grow
-  {
-    from {
-      -ms-transform: scale(0,0); 
-      -webkit-transform: scale(0,0);
-      transform: scale(0,0);            
-    }
-    to {
-      -ms-transform: scale(1,1);
-      -webkit-transform: scale(1,1); 
-      transform: scale(1,1);      
-    }
-  }
-
-  @keyframes shrink
-  {
-    from {
-      -ms-transform: scale(1,1);
-      -webkit-transform: scale(1,1); 
-      transform: scale(1,1);            
-    }
-    to {
-      -ms-transform: scale(0,0); 
-      -webkit-transform: scale(0,0);
-      transform: scale(0,0);      
-    }
-  }
-
-  @-webkit-keyframes shrink
-  {
-    from {
-      -ms-transform: scale(1,1);
-      -webkit-transform: scale(1,1); 
-      transform: scale(1,1);  
-    }
-    to {
-      -ms-transform: scale(0,0);
-      -webkit-transform: scale(0,0); 
-      transform: scale(0,0);        
-    }
-  }
-
-    </style>
-		
     </head>
     <body onload="onload();">
-      <div id="output"></div>
-      <div id="reactor"></div>
+      <div id="output">
+        
+      </div>
     </body>
-
 </html>
