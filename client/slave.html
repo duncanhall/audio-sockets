@@ -3,40 +3,44 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
 
-	var output = null;
-	var socket = null;
-        var reactor = null;
+      var output = null;
+      var socket = null;
+      var reactor = null;
 
-        function onload()
-	{			
-	    output = document.getElementById('output');
-            reactor = document.getElementById('reactor');
-            socket = io.connect('http://22.155.0.8:8000');
+      function onload()
+      {			
+        output = document.getElementById('output');
+        reactor = document.getElementById('reactor');
+        socket = io.connect('http://22.155.0.8:8000');
 
-            socket.on("connect", function() {
-		log('Connected');
-		socket.emit("id", "slave");
-            });
+        socket.on("connect", function() {
 
-	    socket.on("cmd-client", function(data) {
-	        log('CMD: ' + data);
-                if (data == "down")
-		{
-		    reactor.style.visibility = 'visible';
-		}
-		else if (data == "up")
-		{
-		    reactor.style.visibility = 'hidden';
-		}
+          log('Connected');
+          socket.emit("id", "slave");
 
-	    });
-        }			
+        });
 
-        function log(msg)
-        {
-	    console.log(msg);
-            //output.innerHTML = output.innerHTML + 'Press\n';
-        }
+        socket.on("cmd-client", function(data) {
+
+          log('CMD: ' + data);
+
+          if (data == "down")
+          {
+            reactor.style.visibility = 'visible';
+          }
+          else if (data == "up")
+          {
+            reactor.style.visibility = 'hidden';
+          }
+
+        });
+        
+      }			
+
+      function log(msg)
+      {
+        console.log(msg);
+      }
 
     </script>
 
