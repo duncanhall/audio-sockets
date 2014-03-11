@@ -7,34 +7,34 @@
         var socket = null;        
 
         function onload()
-	{			
-	    log('Init...');		
-            
-            socket = io.connect('http://22.155.0.8:8000');
+    	{			
+    	    log('Init...');		
+                
+                socket = io.connect('http://22.155.0.3:8000');
 
-            socket.on("connect", function() {
-		log("Connected as client");
-            });
+                socket.on("connect", function() {
+    		log("Connected as client");
+                });
 
-	    socket.on("msg", function(data) {
-	        log('Msg: ' + data);
-	    });
-        }			
+    	    socket.on("msg", function(data) {
+    	        log('Msg: ' + data);
+    	    });
+            }			
 
-	function send(data)
-	{
-	    socket.emit("cmd-client", data);
-	}
+    	function send(data)
+    	{
+    	    socket.emit("cmd-client", data);
+    	}
 
-	function sendDown()
-	{
+    	function sendDown()
+    	{
             send('down');
-	}
+    	}
 
-	function sendUp()
-	{
-	    send('up');
-	}
+    	function sendUp()
+    	{
+    	    send('up');
+    	}
 
         function log(msg)
         {
@@ -46,10 +46,19 @@
 
     <style>
 
+        h1
+        {
+           font-family: "Tahoma";
+           font-weight: normal;
+           margin: 60px auto 0 auto;
+           text-align: center;
+        }
+
       #bigButton
       {
         width: 200px;
         height: 200px;
+        border-radius: 50%;
         background: #FF0000;
         margin: 50px auto 0 auto;
       }
@@ -59,7 +68,7 @@
 
 	</head>
 	<body onload="onload();">
-		<h1>Websockets Client</h1>
+		<h1>Touch the circle</h1>
 		<div id="output"></div>
 		<div id="bigButton" onTouchStart="sendDown(this);" onTouchEnd="sendUp(this);" ></div>
 	</body>

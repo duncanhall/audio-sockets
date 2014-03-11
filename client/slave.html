@@ -11,7 +11,9 @@
       {			
         output = document.getElementById('output');
         reactor = document.getElementById('reactor');
-        socket = io.connect('http://22.155.0.8:8000');
+        socket = io.connect('http://22.155.0.3:8000');
+
+        reactor.style.webkitTransform = "scale(0)";
 
         socket.on("connect", function() {
 
@@ -22,15 +24,15 @@
 
         socket.on("cmd-client", function(data) {
 
-          log('CMD: ' + data);
-
           if (data == "down")
           {
-            reactor.style.visibility = 'visible';
+              reactor.style.webkitTransform = "scale(1)";
+              reactor.className = 'growing';
           }
           else if (data == "up")
           {
-            reactor.style.visibility = 'hidden';
+              reactor.style.webkitTransform = "scale(0)";
+              reactor.className = 'shrinking';
           }
 
         });
@@ -50,16 +52,83 @@
       {
         width: 200px;
         height: 200px;
+        border-radius: 50%;
         background: #FF0000;
         margin: 50px auto 0 auto;
-        visibility: hidden;
       }
+
+  .growing
+  {
+    animation: grow 1s;
+    -webkit-animation: grow 1s; 
+  }
+
+  .shrinking
+  {
+    animation: shrink 1s;
+    -webkit-animation: shrink 1s; 
+  }
+
+  @keyframes grow
+  {
+    from {
+      -ms-transform: scale(0,0); 
+      -webkit-transform: scale(0,0);
+      transform: scale(0,0);        
+    }
+    to {
+      -ms-transform: scale(1,1); 
+      -webkit-transform: scale(1,1); 
+      transform: scale(1,1);      
+    }
+  }
+
+  @-webkit-keyframes grow
+  {
+    from {
+      -ms-transform: scale(0,0); 
+      -webkit-transform: scale(0,0);
+      transform: scale(0,0);            
+    }
+    to {
+      -ms-transform: scale(1,1);
+      -webkit-transform: scale(1,1); 
+      transform: scale(1,1);      
+    }
+  }
+
+  @keyframes shrink
+  {
+    from {
+      -ms-transform: scale(1,1);
+      -webkit-transform: scale(1,1); 
+      transform: scale(1,1);            
+    }
+    to {
+      -ms-transform: scale(0,0); 
+      -webkit-transform: scale(0,0);
+      transform: scale(0,0);      
+    }
+  }
+
+  @-webkit-keyframes shrink
+  {
+    from {
+      -ms-transform: scale(1,1);
+      -webkit-transform: scale(1,1); 
+      transform: scale(1,1);  
+    }
+    to {
+      -ms-transform: scale(0,0);
+      -webkit-transform: scale(0,0); 
+      transform: scale(0,0);        
+    }
+  }
 
     </style>
 		
     </head>
     <body onload="onload();">
-      <h1>Websockets Demo </h1>
       <div id="output"></div>
       <div id="reactor"></div>
     </body>
