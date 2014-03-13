@@ -1,9 +1,16 @@
+
+body, html
+{
+  background-color: #4D4D4D;
+  padding: 10px;
+}
+
 .responder
 {
   width: 200px;
   height: 200px;
   border-radius: 50%;
-  background: #FF0000;
+  background: #FFFFFF;
   display: inline-block;
   transform: scale(0,0);  
   -ms-transform: scale(0,0);
