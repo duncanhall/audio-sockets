@@ -3,47 +3,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="/socket.io/socket.io.js"></script>
     <script>
+       
+        var SERVER = 'http://22.155.0.3:8000';
+        var CMD_ID = 'cmd-client';
+        var CMD_UP = 'up';
+        var CMD_DOWN = 'down';
 
-        var socket = null;        
+        var socket = null; 
 
         function onload()
     	{			
-    	    log('Init...');		
-                
-                socket = io.connect('http://22.155.0.3:8000');
-
-                socket.on("connect", function() {
-    		log("Connected as client");
-                });
-
-    	    socket.on("msg", function(data) {
-    	        log('Msg: ' + data);
-    	    });
-            }			
+            socket = io.connect(SERVER);
+            socket.on("connect", function() { /* CONNECTED */ });
+        }			
 
     	function send(data)
     	{
-    	    socket.emit("cmd-client", data);
+    	    socket.emit(CMD_ID, data);
     	}
 
     	function sendDown()
     	{
-            send('down');
+            document.body.ontouchmove = function (event) {event.preventDefault();};
+            send(CMD_DOWN);
     	}
 
     	function sendUp()
     	{
-    	    send('up');
+            document.body.ontouchmove = null;
+    	    send(CMD_UP);
     	}
 
-        function log(msg)
-        {
-            console.log(msg);
-        }
-
     </script>		
-
-
     <style>
 
         h1
@@ -54,7 +45,7 @@
            text-align: center;
         }
 
-      #bigButton
+      #touchPad
       {
         width: 200px;
         height: 200px;
@@ -64,13 +55,10 @@
       }
 
     </style>
-
-
 	</head>
 	<body onload="onload();">
 		<h1>Touch the circle</h1>
 		<div id="output"></div>
-		<div id="bigButton" onTouchStart="sendDown(this);" onTouchEnd="sendUp(this);" ></div>
+		<div id="touchPad" ontouchstart="sendDown();" ontouchend="sendUp();" ></div>
 	</body>
-
 </html>
