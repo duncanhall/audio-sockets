@@ -32,13 +32,13 @@
 
           if (body == "down")
           {
-              connection.style.webkitTransform = "scale(1)";
-              connection.className = 'responder growing';
+              //connection.style.webkitTransform = "scale(1)";
+              connection.className = 'responder grow';
           }
           else if (body == "up")
           {       
-              connection.style.webkitTransform = "scale(0)";
-              connection.className = 'responder shrinking';
+              //connection.style.webkitTransform = "scale(0)";
+              connection.className = 'responder';
           }
 
         });
@@ -59,7 +59,7 @@
         function createResponder ()
         {
             var responder = document.createElement('div');
-            responder.style.webkitTransform = "scale(0)";
+            //responder.style.webkitTransform = "scale(0)";
             responder.className = 'responder';
             output.appendChild(responder);
             responder.style.marginLeft = String(connections.length * 200) + "px";
