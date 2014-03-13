@@ -1,86 +1,93 @@
 <html>
-  <head>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="js/Class.js"></script>
-    <script>
+	<head>
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="js/Class.js"></script>
+	<script>
 
-      var output = null;
-      var socket = null;
-      var reactor = null;
+	var output = null;
+	var socket = null;
+	var reactor = null;
 
-      function onload()
-      {			
+	function onload()
+	{     
 
-        output = document.getElementById('output');
-        socket = io.connect('http://22.155.0.3:8000');
+		output = document.getElementById('output');
+		socket = io.connect('http://22.155.0.3:8000');
+		clients = [];
 
-        connections = [];
+		socket.on("connect", function() {
 
-        socket.on("connect", function() {
+			socket.emit("id", "slave");
 
-          log('Connected');
-          socket.emit("id", "slave");
+		});
 
-        });
+		socket.on("cmd-client", function(data) {
 
-        socket.on("cmd-client", function(data) {
+			var delim = data.indexOf(":");
+			var id = data.substr(0, delim);
+			var body = data.substr(delim + 1);
+			var client = getClientByID(id);
 
-          var delim = data.indexOf(":");
-          var id = data.substr(0, delim);
-          var body = data.substr(delim + 1);
-          var connection = getConnection(id);
+			switch(body)
+			{
 
-          if (body == "down")
-          {
-              //connection.style.webkitTransform = "scale(1)";
-              connection.className = 'responder grow';
-          }
-          else if (body == "up")
-          {       
-              //connection.style.webkitTransform = "scale(0)";
-              connection.className = 'responder';
-          }
+				case "down":
+					client.className = 'responder grow';
+					break;
 
-        });
-        
-        function getConnection (id) 
-        {
-            var responder = connections[id];
+				case "up":
+					client.className = 'responder';
+					break;
 
-            if (responder == null)
-            {
-              responder = createResponder();
-              connections[id] = responder;
-            }
+				case "disconnect":
+					destroyClient(id);
+					break;
+			}
 
-            return responder;
-        }
 
-        function createResponder ()
-        {
-            var responder = document.createElement('div');
-            //responder.style.webkitTransform = "scale(0)";
-            responder.className = 'responder';
-            output.appendChild(responder);
-            responder.style.marginLeft = String(connections.length * 200) + "px";
+		});
 
-            return responder;
-        }
+	}     
 
-      }			
+	function getClientByID (id) 
+	{
+		var responder = clients[id];
+		if (responder == null)
+		{
+			responder = createClientResponder();
+			clients[id] = responder;
+		}
+		return responder;
+	}
 
-      function log(msg)
-      {
-        console.log(msg);
-      }
+	function destroyClient(id)
+	{
+		var responder = clients[id];
 
-    </script>
-		<link rel="stylesheet" href="css/slave.css" />
+		if (responder != null)
+		{
+			output.removeChild(responder);
+		}
 
-    </head>
-    <body onload="onload();">
-      <div id="output">
-        
-      </div>
-    </body>
+		clients[id] = null;
+		delete clients[id];
+	}
+
+	function createClientResponder ()
+	{
+		var responder = document.createElement('div');
+		responder.className = 'responder';
+		output.appendChild(responder);
+		responder.style.marginLeft = String(clients.length * 200) + "px";
+
+		return responder;
+	}	
+
+	</script>
+	<link rel="stylesheet" href="css/slave.css" />
+
+	</head>
+	<body onload="onload();">
+		<div id="output"></div>
+	</body>
 </html>

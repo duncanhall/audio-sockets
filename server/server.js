@@ -29,6 +29,12 @@ io.sockets.on('connection', function (socket) {
 		}
 	});
 
+	socket.on('disconnect', function() {
+
+		io.sockets.socket(slaveID).emit('cmd-client', String(socket.id) + ":disconnect");
+
+	});
+
 	console.log('Client connected');
 
 });
