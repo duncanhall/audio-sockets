@@ -1,0 +1,3 @@
+[submodule "client/audiosynth"]
+	path = client/audiosynth
+	url = git://github.com/keithwhor/audiosynth.git
