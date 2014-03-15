@@ -10,7 +10,7 @@ body, html
   width: 200px;
   height: 200px;
   border-radius: 50%;
-  background: #FFFFFF;
+  border: 2px solid #FFFFFF;
   display: inline-block;
   transform: scale(0,0);  
   -ms-transform: scale(0,0);
