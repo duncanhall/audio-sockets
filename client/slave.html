@@ -2,13 +2,17 @@
 	<head>
 	<script src="/socket.io/socket.io.js"></script>
 	<script src="audiosynth/audiosynth.js"></script>
+	<script src="js/Class.js"></script>
+	<script src="js/Instrument.js"></script>
+	<script src="js/Note.js"></script>
 	<script>
 
 	var output = null;
 	var socket = null;
 	var reactor = null;
 
-	var piano = Synth.createInstrument('organ');
+	var organ = Synth.createInstrument('organ');
+	var bass = new Bass();
 
 	function onload()
 	{     
@@ -34,13 +38,13 @@
 			{
 
 				case "down":
-					piano.play('C', 1, 1);
-					client.className = 'responder grow';
+					organ.play.apply(organ, bass.intro.toArgs());
+					client.className = 'instrument grow';
 					break;
 
 				case "up":
-					piano.play('C', 2, 0.4);
-					client.className = 'responder';
+					organ.play.apply(organ, bass.outro.toArgs());
+					client.className = 'instrument';
 					break;
 
 				case "disconnect":
@@ -55,36 +59,36 @@
 
 	function getClientByID (id) 
 	{
-		var responder = clients[id];
-		if (responder == null)
+		var instrument = clients[id];
+		if (instrument == null)
 		{
-			responder = createClientResponder();
-			clients[id] = responder;
+			instrument = createInstrument();
+			clients[id] = instrument;
 		}
-		return responder;
+		return instrument;
 	}
 
 	function destroyClient(id)
 	{
-		var responder = clients[id];
+		var instrument = clients[id];
 
-		if (responder != null)
+		if (instrument != null)
 		{
-			output.removeChild(responder);
+			output.removeChild(instrument);
 		}
 
 		clients[id] = null;
 		delete clients[id];
 	}
 
-	function createClientResponder ()
+	function createInstrument ()
 	{
-		var responder = document.createElement('div');
-		responder.className = 'responder';
-		output.appendChild(responder);
-		responder.style.marginLeft = String(clients.length * 200) + "px";
+		var instrument = document.createElement('div');
+		instrument.className = 'instrument';
+		output.appendChild(instrument);
+		instrument.style.marginLeft = String(clients.length * 200) + "px";
 
-		return responder;
+		return instrument;
 	}	
 
 	</script>
