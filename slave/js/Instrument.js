@@ -1,8 +1,6 @@
 /*
-
-	INSTRUMENT
-
-*/
+ * INSTRUMENT
+ */
 var Instrument = Class.extend({
 
 	init: function (synth, intro, outro) {
@@ -43,10 +41,8 @@ var Instrument = Class.extend({
 
 
 /*
-
-	BASS
-
-*/
+ * BASS
+ */
 var Bass = Instrument.extend({
 
 	init: function () {
@@ -59,16 +55,14 @@ var Bass = Instrument.extend({
 
 
 /*
-
-	MID
-
-*/
+ * MID
+ */
 var Mid = Instrument.extend({
 
 	init: function (synth) {
 
-		this._super(Synth.createInstrument('acoustic'), 
-			new Note('C', 4, 1.4), new Note('C', 3, 1.6));
+		this._super(Synth.createInstrument('organ'), 
+			new Note('C', 4, 1.4), new Note('A', 2, 1));
 
 		this.volumeIn = 0.8;
 		this.volumeout = 0.7;
@@ -78,16 +72,14 @@ var Mid = Instrument.extend({
 
 
 /*
-
-	HIGH
-
-*/
+ * HIGH
+ */
 var High = Instrument.extend({
 
 	init: function (synth) {
 
-		this._super(Synth.createInstrument('acoustic'), 
-			new Note('G', 4, 1.4), new Note('C', 3, 1.6));
+		this._super(Synth.createInstrument('organ'), 
+			new Note('G', 1, 1), new Note('G', 2, 1));
 
 		this.volumeIn = 0.9;
 		this.volumeout = 0.7;
@@ -97,10 +89,8 @@ var High = Instrument.extend({
 
 
 /*
-
-	NOTE
-
-*/
+ * NOTE
+ */
 var Note = Class.extend({
 
 	init: function(note, octave, duration) {

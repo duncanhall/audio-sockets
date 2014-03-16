@@ -6,11 +6,15 @@ var SLAVE_HTML = 'slave';
 
 var fs = require('fs.extra'); 
 var express = require('express');
-var app = express();
-var server = require('http').createServer(app);
-var io = require('socket.io').listen(server);
+var app;
+var server;
+var io;
 var slaveID = 0;
 var connections = [];
+
+//Check for the existence of a 'watch' argument
+var watch = process.argv[2] == "watch";
+
 
 /*
  * Clear the public directory
@@ -35,6 +39,11 @@ fs.rmrf(PUBLIC_HTML, function (error) {
 			 */
 			listenForConnections();
 
+			/*
+			 * Watch for changes
+			 */
+			if (watch) watchFiles();
+
 		});
 
 	});
@@ -42,7 +51,11 @@ fs.rmrf(PUBLIC_HTML, function (error) {
 });
 
 
-function listenForConnections() {
+function listenForConnections () {
+
+	app = express();
+	server = require('http').createServer(app);
+	io = require('socket.io').listen(server);
 
 	/*
 	 * Serve the contents of the /public/ folder on port 8000
@@ -78,3 +91,33 @@ function listenForConnections() {
 	});
 }
 
+
+/*
+ * Automatically watch client and server files for changes
+ */
+function watchFiles () {
+
+	var watchr = require('watchr');
+	watchr.watch({
+
+		paths: ['./' + CLIENT_HTML, './' + SLAVE_HTML],
+		listeners: {
+
+			change: function (type, path, stat1, stat2) {
+				
+				var subpath = path.substr(path.indexOf('\\') + 1);
+
+				/*
+				 * Remove the public version of the file that's changed and
+				 * replace it with the updated version.
+				 */
+				fs.remove(PUBLIC_HTML + '\\' + subpath);
+				fs.copy(path, PUBLIC_HTML + '\\' + subpath, function (error) { if (error) return console.error(error); 
+
+					console.log('Updated ' + path);
+				});
+			}
+		}
+	});	
+
+}
