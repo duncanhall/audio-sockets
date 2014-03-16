@@ -3,17 +3,16 @@ var PUBLIC_HTML = './public';
 var PUBLIC_EXPR = '/../public';
 var CLIENT_HTML = 'client';
 var SLAVE_HTML = 'slave';
+var CMD_CLIENT = 'cmd-client';
 
 var fs = require('fs.extra'); 
-var express = require('express');
+var express;
 var app;
 var server;
 var io;
 var slaveID = 0;
 var connections = [];
-
-//Check for the existence of a 'watch' argument
-var watch = process.argv[2] == "watch";
+var watch = process.argv[2] == "watch"; //Check for a 'watch' argument
 
 
 /*
@@ -53,6 +52,7 @@ fs.rmrf(PUBLIC_HTML, function (error) {
 
 function listenForConnections () {
 
+	express = require('express');
 	app = express();
 	server = require('http').createServer(app);
 	io = require('socket.io').listen(server);
@@ -63,6 +63,9 @@ function listenForConnections () {
 	app.use("/", express.static(__dirname + PUBLIC_EXPR));
 	server.listen(8000);
 
+	/*
+	 * Define listeners for each socket that connects
+	 */
 	io.sockets.on('connection', function (socket) {
 		
 		connections[socket.id] = socket;
@@ -70,8 +73,8 @@ function listenForConnections () {
 		/*
 		 * Relay client commands to the slave
 		 */
-		socket.on('cmd-client', function(cmd) {
-			connections[slaveID].emit('cmd-client', String(socket.id) + ":" + cmd);
+		socket.on(CMD_CLIENT, function(cmd) {
+			relayClientCommand(socket.id, cmd);
 		});
 
 		/*
@@ -85,10 +88,15 @@ function listenForConnections () {
 		 * Inform slave when a client disconnects
 		 */
 		socket.on('disconnect', function() {
-			connections[slaveID].emit('cmd-client', String(socket.id) + ":disconnect");
+			relayClientCommand(socket.id, 'disconnect');
 		});
 
 	});
+
+
+	var relayClientCommand = function (id, cmd) {
+		connections[slaveID].emit(CMD_CLIENT, String(id) + ':' + cmd);
+	}
 }
 
 
