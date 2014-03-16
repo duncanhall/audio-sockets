@@ -10,9 +10,9 @@
 	var socket = null;
 	var reactor = null;
 
+	var instruments = [Bass, Mid];
 	var organ = Synth.createInstrument('organ');
-
-	var instruments = [];
+	var numInstruments = 0;
 
 	function onload()
 	{     
@@ -72,6 +72,7 @@
 
 		if (instrument != null)
 		{
+			numInstruments--;
 			instrument.destroy();
 			output.removeChild(instrument.element);
 		}
@@ -82,10 +83,10 @@
 
 	function createInstrument ()
 	{
-		var instrument = new Bass(organ);
-		instrument.position(clients.length);
+		var instrument = new instruments[numInstruments](organ);
 		output.appendChild(instrument.element);
-
+		
+		numInstruments++;
 		return instrument;
 	}	
 

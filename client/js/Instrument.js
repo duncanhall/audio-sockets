@@ -16,11 +16,6 @@ var Instrument = Class.extend({
 		
 	},
 
-	position: function (i) {
-
-		this.element.style.marginLeft = String(i * 200) + "px";
-	},
-
 	playIntro: function () {
 
 		this.synth.play.apply(this.synth, this.intro.toArgs());
@@ -73,8 +68,9 @@ var Mid = Instrument.extend({
 	init: function (synth) {
 
 		this._super(synth,
-			new Note('C', 3, 0.4), 
-			new Note('C', 2, 1.4)
+			new Note('A', 2, 1.4),
+			new Note('G', 2, 1.4)
+			
 		);
 	}	
 
