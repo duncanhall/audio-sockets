@@ -1,26 +1,23 @@
-
-body, html
-{
+body, html {
   background-color: #4D4D4D;
-  padding: 10px;
-}
+  padding: 10px; }
 
-.responder
-{
+.responder {
   width: 200px;
   height: 200px;
   border-radius: 50%;
-  border: 2px solid #FFFFFF;
+  border: 2px solid white;
   display: inline-block;
-  transform: scale(0,0);  
-  -ms-transform: scale(0,0);
-  -webkit-transform: scale(0,0);  
-  transition: all 0.4s;  
-  -webkit-transition: all 0.4s;   
-}
+  box-shadow: 0 0 50px white;
+  -webkit-box-shadow: 0 0 50px white;
+  -moz-box-shadow: 0 0 50px white;
+  transform: scale(0, 0);
+  -ms-transform: scale(0, 0);
+  -webkit-transform: scale(0, 0);
+  transition: all 0.4s;
+  -webkit-transition: all 0.4s; }
 
 .grow {
-  transform: scale(1,1);  
-  -ms-transform: scale(1,1);
-  -webkit-transform: scale(1,1);
-}
+  transform: scale(1, 1);
+  -ms-transform: scale(1, 1);
+  -webkit-transform: scale(1, 1); }

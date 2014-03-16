@@ -1,0 +1,40 @@
+
+
+$bgColor: #4D4D4D;
+
+$rDiameter: 200px;
+$rBorderColor: rgba(255, 255, 255, 1);
+$rGlowColor: rgba(255, 255, 255, 1);
+$rScaleSmall: scale(0,0);
+$rScaleBig: scale(1,1);
+$rGrowTime: 0.4s;
+$rGlowSize: 50px;
+
+body, html
+{
+  background-color: #4D4D4D;
+  padding: 10px;
+}
+
+.responder
+{
+  width: $rDiameter;
+  height: $rDiameter;
+  border-radius: 50%;
+  border: 2px solid $rBorderColor;
+  display: inline-block;
+  box-shadow: 0 0 $rGlowSize $rGlowColor;
+  -webkit-box-shadow: 0 0 $rGlowSize $rGlowColor; 
+  -moz-box-shadow: 0 0 $rGlowSize $rGlowColor; 
+  transform: $rScaleSmall;  
+  -ms-transform: $rScaleSmall;
+  -webkit-transform: $rScaleSmall;  
+  transition: all $rGrowTime;  
+  -webkit-transition: all $rGrowTime;   
+}
+
+.grow {
+  transform: $rScaleBig;  
+  -ms-transform: $rScaleBig;
+  -webkit-transform: $rScaleBig;
+}
