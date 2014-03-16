@@ -5,19 +5,23 @@ var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
 var slaveID = 0;
 
+var connections = [];
+
 server.listen(8000);
 
 app.use("/", express.static(__dirname + "/../client/"));
 
 io.sockets.on('connection', function (socket) {
 	
+	connections[socket.id] = socket;
+
 	socket.on('msg', function(data) {
 		//
 	});	
 
 	socket.on('cmd-client', function(cmd) {
 	
-		io.sockets.socket(slaveID).emit('cmd-client', String(socket.id) + ":" + cmd);
+		connections[slaveID].emit('cmd-client', String(socket.id) + ":" + cmd);
 		
 	});
 
@@ -31,7 +35,7 @@ io.sockets.on('connection', function (socket) {
 
 	socket.on('disconnect', function() {
 
-		io.sockets.socket(slaveID).emit('cmd-client', String(socket.id) + ":disconnect");
+		connections[slaveID].emit('cmd-client', String(socket.id) + ":disconnect");
 
 	});
 
