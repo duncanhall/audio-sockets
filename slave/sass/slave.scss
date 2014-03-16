@@ -1,7 +1,5 @@
 
-
 $bgColor: #4D4D4D;
-
 $rDiameter: 200px;
 $rBorderColor: rgba(255, 255, 255, 1);
 $rGlowColor: rgba(255, 255, 255, 1);
@@ -12,8 +10,18 @@ $rGlowSize: 50px;
 
 body, html
 {
-  background-color: #4D4D4D;
+  background-color: $bgColor;
   padding: 10px;
+}
+
+#output
+{
+  position: absolute; 
+  top: 50%;
+  left: 50%;
+  height: $rDiameter;
+  width: $rDiameter;
+  margin: -100px auto 0 -100px;
 }
 
 .instrument

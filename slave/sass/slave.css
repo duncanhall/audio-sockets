@@ -1,14 +1,6 @@
 body, html {
-  background-color: #4d4d4d;
+  background-color: #4D4D4D;
   padding: 10px; }
-
-#output {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  height: 200px;
-  width: 200px;
-  margin: -100px auto 0 -100px; }
 
 .instrument {
   width: 200px;

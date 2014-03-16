@@ -19,7 +19,6 @@
 		clients = [];
 
 		socket.on("connect", function() {
-
 			socket.emit("id", "slave");
 		});
 
@@ -42,12 +41,12 @@
 					break;
 
 				case "disconnect":
+					console.log('disconnect client');
 					destroyClient(id);
 					break;
 			}
 
 		});
-
 	}    
 
 	function getClientByID (id) {
@@ -55,7 +54,6 @@
 		var instrument = clients[id];
 
 		if (instrument == null) {
-
 			instrument = createInstrument();
 			clients[id] = instrument;
 		}
@@ -68,10 +66,10 @@
 		var instrument = clients[id];
 
 		if (instrument != null) {
-
 			numInstruments--;
-			instrument.destroy();
 			output.removeChild(instrument.element);
+			instrument.destroy();
+			updateOutput();
 		}
 
 		clients[id] = null;
@@ -81,17 +79,28 @@
 	function createInstrument () {
 
 		var instrument = new instruments[numInstruments]();
-		output.appendChild(instrument.element);
-		
+
 		numInstruments++;
+		output.appendChild(instrument.element);
+		updateOutput();
+
 		return instrument;
 	}	
+
+	function updateOutput () {
+
+		output.style.width = String(numInstruments * 210) + 'px';
+		output.style.marginLeft = '-' + String(numInstruments * 100) + 'px';		
+	}
+
 
 	</script>
 	<link rel="stylesheet" href="css/slave.css" />
 
 	</head>
 	<body onload="onload();">
-		<div id="output"></div>
+		<div id="container">
+			<div id="output"></div>
+		</div>
 	</body>
 </html>
