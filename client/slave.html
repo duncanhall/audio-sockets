@@ -34,11 +34,12 @@
 			{
 
 				case "down":
-					piano.play('C', 2, 1);
+					piano.play('C', 1, 1);
 					client.className = 'responder grow';
 					break;
 
 				case "up":
+					piano.play('C', 2, 0.4);
 					client.className = 'responder';
 					break;
 
