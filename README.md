@@ -1,2 +1,2 @@
-node-websockets
+Audio Sockets
 ===============
