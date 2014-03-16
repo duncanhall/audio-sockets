@@ -9,19 +9,19 @@ A collaborative music experiment using your webbrowser as an instrument.
 
 ###Dependencies
 
-[socket.io](http://socket.io/)  
-[express](http://expressjs.com/)  
+[audiosynth](https://github.com/keithwhor/audiosynth/) - Dynamic waveform audio synthesizer, written in Javascript.  
+[socket.io](http://socket.io/) - Realtime application framework for Node.JS  
+[express](http://expressjs.com/) - Web application framework for node
 
-Installed via `npm install`
+###Installation
+	
+Install the dependencies for the server and clone the audiosynth submodule for playback:
 
-[audiosynth](https://github.com/keithwhor/audiosynth/)
+	npm install
+    git submodule init
+    git submodule update
 
-Installed via:
-
-`git submodule init`  
-`git submodule update`
-
-###Install
+Run the server:
 
 `node server/server.js`
 
