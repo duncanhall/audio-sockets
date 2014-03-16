@@ -10,7 +10,8 @@ var Instrument = Class.extend({
 		this.synth = synth;
 		this.intro = intro;
 		this.outro = outro;
-		this.volume = 1;
+		this.volumeIn = 1;
+		this.volumeout = 1;
 
 		this.element = document.createElement('div');
 		this.element.className = 'instrument';
@@ -18,7 +19,7 @@ var Instrument = Class.extend({
 
 	playIntro: function () {
 
-		Synth.setVolume(this.volume);
+		Synth.setVolume(this.volumeIn);
 		this.synth.play.apply(this.synth, this.intro.toArgs());
 		this.element.className = 'instrument grow';		
 		Synth.setVolume(1);
@@ -26,7 +27,7 @@ var Instrument = Class.extend({
 
 	playOutro: function () {
 
-		Synth.setVolume(this.volume);
+		Synth.setVolume(this.volumeout);
 		this.synth.play.apply(this.synth, this.outro.toArgs());
 		this.element.className = 'instrument';		
 		Synth.setVolume(1);
@@ -36,7 +37,6 @@ var Instrument = Class.extend({
 
 		this.element = null;
 		this.synth = null;
-
 	}
 
 });
@@ -70,11 +70,30 @@ var Mid = Instrument.extend({
 		this._super(Synth.createInstrument('acoustic'), 
 			new Note('C', 4, 1.4), new Note('C', 3, 1.6));
 
-		this.volume = 0.1;
+		this.volumeIn = 0.8;
+		this.volumeout = 0.7;
 	}
 
 });
 
+
+/*
+
+	HIGH
+
+*/
+var High = Instrument.extend({
+
+	init: function (synth) {
+
+		this._super(Synth.createInstrument('acoustic'), 
+			new Note('G', 4, 1.4), new Note('C', 3, 1.6));
+
+		this.volumeIn = 0.9;
+		this.volumeout = 0.7;
+	}
+
+});
 
 
 /*

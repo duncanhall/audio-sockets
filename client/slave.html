@@ -9,7 +9,7 @@
 	var output = null;
 	var socket = null;
 	var reactor = null;
-	var instruments = [Bass, Mid];
+	var instruments = [Mid, High, Bass];
 	var numInstruments = 0;
 
 	function onload()
@@ -79,7 +79,7 @@
 	}
 
 	function createInstrument () {
-		
+
 		var instrument = new instruments[numInstruments]();
 		output.appendChild(instrument.element);
 		
