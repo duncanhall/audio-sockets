@@ -9,14 +9,11 @@
 	var output = null;
 	var socket = null;
 	var reactor = null;
-
 	var instruments = [Bass, Mid];
-	var organ = Synth.createInstrument('organ');
 	var numInstruments = 0;
 
 	function onload()
 	{     
-
 		output = document.getElementById('output');
 		socket = io.connect('http://22.155.0.3:8000');
 		clients = [];
@@ -24,7 +21,6 @@
 		socket.on("connect", function() {
 
 			socket.emit("id", "slave");
-
 		});
 
 		socket.on("cmd-client", function(data) {
@@ -50,28 +46,29 @@
 					break;
 			}
 
-
 		});
 
 	}     
 
-	function getClientByID (id) 
-	{
+	function getClientByID (id) {
+
 		var instrument = clients[id];
-		if (instrument == null)
-		{
+
+		if (instrument == null) {
+
 			instrument = createInstrument();
 			clients[id] = instrument;
 		}
+
 		return instrument;
 	}
 
-	function destroyClient(id)
-	{
+	function destroyClient(id) {
+
 		var instrument = clients[id];
 
-		if (instrument != null)
-		{
+		if (instrument != null) {
+
 			numInstruments--;
 			instrument.destroy();
 			output.removeChild(instrument.element);
@@ -81,9 +78,9 @@
 		delete clients[id];
 	}
 
-	function createInstrument ()
-	{
-		var instrument = new instruments[numInstruments](organ);
+	function createInstrument () {
+		
+		var instrument = new instruments[numInstruments]();
 		output.appendChild(instrument.element);
 		
 		numInstruments++;
