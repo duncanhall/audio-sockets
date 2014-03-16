@@ -4,7 +4,6 @@
 	<script src="audiosynth/audiosynth.js"></script>
 	<script src="js/Class.js"></script>
 	<script src="js/Instrument.js"></script>
-	<script src="js/Note.js"></script>
 	<script>
 
 	var output = null;
@@ -12,7 +11,8 @@
 	var reactor = null;
 
 	var organ = Synth.createInstrument('organ');
-	var bass = new Bass();
+
+	var instruments = [];
 
 	function onload()
 	{     
@@ -32,19 +32,17 @@
 			var delim = data.indexOf(":");
 			var id = data.substr(0, delim);
 			var body = data.substr(delim + 1);
-			var client = getClientByID(id);
+			var instrument = getClientByID(id);
 
 			switch(body)
 			{
 
 				case "down":
-					organ.play.apply(organ, bass.intro.toArgs());
-					client.className = 'instrument grow';
+					instrument.playIntro();
 					break;
 
 				case "up":
-					organ.play.apply(organ, bass.outro.toArgs());
-					client.className = 'instrument';
+					instrument.playOutro();
 					break;
 
 				case "disconnect":
@@ -74,7 +72,8 @@
 
 		if (instrument != null)
 		{
-			output.removeChild(instrument);
+			instrument.destroy();
+			output.removeChild(instrument.element);
 		}
 
 		clients[id] = null;
@@ -83,10 +82,9 @@
 
 	function createInstrument ()
 	{
-		var instrument = document.createElement('div');
-		instrument.className = 'instrument';
-		output.appendChild(instrument);
-		instrument.style.marginLeft = String(clients.length * 200) + "px";
+		var instrument = new Bass(organ);
+		instrument.position(clients.length);
+		output.appendChild(instrument.element);
 
 		return instrument;
 	}	

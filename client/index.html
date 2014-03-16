@@ -15,6 +15,14 @@
     	{			
             socket = io.connect(SERVER);
             socket.on("connect", function() { /* CONNECTED */ });
+
+            var touchPad = document.getElementById('touchPad');
+
+            if (!('ontouchstart' in touchPad)) {
+              
+                touchPad.onmousedown = function () {sendDown();};
+                touchPad.onmouseup = function () {sendUp();};
+            }
         }			
 
     	function send(data)
