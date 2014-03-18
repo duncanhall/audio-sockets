@@ -1,0 +1,145 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+
+        var touchPad = null;
+        var pointer = null;
+        var touchEnabled = false;
+
+        var touchStartHandler = null;
+        var touchEndHandler = null;
+
+        var originX = 0;
+        var originY = 0;
+
+        function onload() {		
+
+            touchPad = document.getElementById('touchPad');
+            pointer = document.getElementById('pointer');
+            touchEnabled = 'ontouchstart' in touchPad;
+
+            /*
+             * Save touchpage center origin point
+             */
+            var rect = touchPad.getBoundingClientRect();
+            originX = rect.left + ((rect.right - rect.left) / 2);
+            originY = rect.top + ((rect.bottom - rect.top) / 2);
+
+            /*
+             * Add touch or mouse listeners depending on support
+             */
+            touchStartHandler = function (event) { sendDown(event); };
+            touchEndHandler = function (event) { sendUp(event); };
+
+            if (touchEnabled) {
+             
+                touchPad.ontouchstart = touchStartHandler; 
+                touchPad.ontouchend = touchEndHandler;
+            }
+            else {
+
+                touchPad.onmousedown = touchStartHandler;
+            }
+        }			
+
+
+    	function sendDown(event)
+    	{
+            setTouchPosition(event);
+            pointer.style.visibility = 'visible';
+
+            if (touchEnabled) {
+
+                document.body.ontouchmove = function (event) { 
+
+                    touchMove(event);
+                    event.preventDefault();
+                };
+            }
+            else {
+                
+                document.body.onmousemove = touchMove;
+                document.body.onmouseup = touchEndHandler;
+            }
+
+    	}
+
+    	function sendUp(event) {
+
+            pointer.style.visibility = 'hidden';
+
+            if (touchEnabled) {
+
+                document.body.ontouchmove = null;
+            }
+            else {
+            
+                document.body.onmousemove = null;
+                document.body.onmouseup = null;
+            }
+
+
+    	}
+
+        function touchMove (event)
+        {
+            setTouchPosition(event);
+        }
+
+        function setTouchPosition (event)
+        {
+            var pageX = touchEnabled ? event.touches[0].pageX : event.pageX;
+            var pageY = touchEnabled ? event.touches[0].pageY : event.pageY;
+
+            var px = pageX - 40;
+            var py = pageY - 100;            
+
+            pointer.style.margin = py + 'px 0 0 ' + px  + 'px';            
+        }
+
+    </script>		
+    <style>
+    
+        body, html
+        {
+            background-color: #4D4D4D;
+        }
+
+        h1
+        {
+           font-family: "Tahoma";
+           font-weight: normal;
+           margin: 60px auto 0 auto;
+           text-align: center;
+           color: #FFFFFF;
+        }
+
+        #touchPad
+        {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: #FFFFFF;
+            margin: 50px auto 0 auto;
+        }
+
+        #pointer
+        {
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            background-color: #000000;
+            visibility: hidden;
+            
+            position: absolute;
+            z-index: 100;
+        }
+
+    </style>
+	</head>
+	<body onload="onload();">
+        <div id="pointer"></div>
+		<div id="touchPad"></div>
+	</body>
+</html>
