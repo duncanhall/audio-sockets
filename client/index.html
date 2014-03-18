@@ -2,44 +2,31 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="/socket.io/socket.io.js"></script>
+    <script src="js/Class.js"></script>
+    <script src="js/MultiDirectionControl.js"></script>    
     <script>
        
         var SERVER = 'http://22.155.0.3:8000';
         var CMD_ID = 'cmd-client';
         var CMD_UP = 'up';
         var CMD_DOWN = 'down';
-
-        var socket = null; 
+        var touchPad = null;
 
         function onload()
     	{			
             socket = io.connect(SERVER);
             socket.on("connect", function() { /* CONNECTED */ });
 
-            var touchPad = document.getElementById('touchPad');
+            touchPad = document.getElementById('touchPad');
+            control = new MultiDirectionControl(touchPad);
 
-            if (!('ontouchstart' in touchPad)) {
-              
-                touchPad.onmousedown = function () {sendDown();};
-                touchPad.onmouseup = function () {sendUp();};
-            }
+            control.onTouchStart = function() { send(CMD_DOWN); }
+            control.onTouchEnd = function() { send(CMD_UP); }           
         }			
 
     	function send(data)
     	{
     	    socket.emit(CMD_ID, data);
-    	}
-
-    	function sendDown()
-    	{
-            document.body.ontouchmove = function (event) {event.preventDefault();};
-            send(CMD_DOWN);
-    	}
-
-    	function sendUp()
-    	{
-            document.body.ontouchmove = null;
-    	    send(CMD_UP);
     	}
 
     </script>		
@@ -50,29 +37,40 @@
             background-color: #4D4D4D;
         }
 
-        h1
+        #container
         {
-           font-family: "Tahoma";
-           font-weight: normal;
-           margin: 60px auto 0 auto;
-           text-align: center;
-           color: #FFFFFF;
+            position: absolute;
+            top: 50%;
+            margin-top: -100px;
+            left: 0;
+            width: 100%;
         }
 
         #touchPad
         {
-        width: 200px;
-        height: 200px;
-        border-radius: 50%;
-        background: #FFFFFF;
-        margin: 50px auto 0 auto;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: #FFFFFF;
+            margin: 0 auto 0 auto;
+        }
+
+        .touch
+        {
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            background-color: #000000;
+            visibility: hidden;
+            position: absolute;
+            z-index: 100;
         }
 
     </style>
 	</head>
-	<body onload="onload();">
-		<h1>Hold the circle</h1>
-		<div id="output"></div>
-		<div id="touchPad" ontouchstart="sendDown();" ontouchend="sendUp();" ></div>
-	</body>
+    <body onload="onload();">
+        <div id="container">
+            <div id="touchPad"></div>
+        </div>
+    </body>
 </html>

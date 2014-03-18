@@ -19,19 +19,19 @@ var watch = process.argv[2] == "watch"; //Check for a 'watch' argument
  * Clear the public directory
  */
 fs.rmrf(PUBLIC_HTML, function (error) {
-	if (error) return console.error(error);
+	if (error) return console.error('rmrf: ' + error);
 
 	/*
 	 * Copy the client to the public directory
 	 */
 	fs.copyRecursive(CLIENT_HTML, PUBLIC_HTML, function (error) { 
-		if (error) return console.error(error);
+		if (error) return console.error('Copy client: ' + error);
 
 		/*
 		 * Copy the slave to the public directory
 		 */
 		fs.copyRecursive(SLAVE_HTML, PUBLIC_HTML, function (error) { 
-			if (error) return console.error(error); 
+			if (error) return console.error('Copy slave: ' + error); 
 
 			/*
 			 * Filesystem ready

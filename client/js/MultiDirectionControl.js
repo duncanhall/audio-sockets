@@ -7,11 +7,13 @@ var MultiDirectionControl = Class.extend({
 	init: function (element) {
 
 		this.element = element;
-		this.touchEnabled = 'ontouchstart' in this.element;
-
+		this.touchSupported = 'ontouchstart' in this.element;
     this.createTouchPointer();
 		this.getOrigin();
 		this.addTouchListeners();
+
+    this.onTouchStart = null;
+    this.onTouchStart = null;
 	},
 
   /**
@@ -22,7 +24,7 @@ var MultiDirectionControl = Class.extend({
     this.touch = document.createElement('div');
     this.touch.className = 'touch';
     document.body.appendChild(this.touch);    
-  }
+  },
 
   /**
    * Save reference to the control center origin
@@ -42,14 +44,14 @@ var MultiDirectionControl = Class.extend({
 
     var scope = this;
 
-    if (this.touchEnabled) {
+    if (this.touchSupported) {
 
-        this.element.ontouchstart = function (event) { scope.touchStart(event); }; 
-        this.element.ontouchend = function (event) { scope.touchEnd(event); };
-      }
-      else {
+        this.element.ontouchstart = function(event){ scope.touchStart(event); }; 
+        this.element.ontouchend = function(event){ scope.touchEnd(event); };
+      
+    } else {
 
-        scope.element.onmousedown = function (event) { scope.touchStart(event); };
+        scope.element.onmousedown = function(event){ scope.touchStart(event); };
     }
 	},
 
@@ -58,23 +60,25 @@ var MultiDirectionControl = Class.extend({
    */
 	touchStart: function (event) {
 
+    this.onTouchStart();
+
     var scope = this;
 
 		this.setTouchPosition(event);
 		this.touch.style.visibility = 'visible';
 
-        if (this.touchEnabled) {
+    if (this.touchSupported) {
 
-            document.body.ontouchmove = function (event) { 
+      document.body.ontouchmove = function (event) { 
+        scope.setTouchPosition(event);
+        event.preventDefault();
+      };
 
-                scope.setTouchPosition(event);
-                event.preventDefault();};
-        }
-        else {
-            
-            document.body.onmousemove = function (event) { scope.setTouchPosition(event); };
-            document.body.onmouseup = function (event) { scope.touchEnd(event); };
-        }		
+    } else {
+        
+      document.body.onmousemove = function(event){ scope.setTouchPosition(event); };
+      document.body.onmouseup = function(event){ scope.touchEnd(event); };
+    }		
 	},
 	
   /**
@@ -82,17 +86,18 @@ var MultiDirectionControl = Class.extend({
    */  
 	touchEnd: function (event) {
 	
+    this.onTouchEnd();
 		this.touch.style.visibility = 'hidden';
 
-        if (this.touchEnabled) {
+    if (this.touchSupported) {
 
-            document.body.ontouchmove = null;
-        }
-        else {
-        
-            document.body.onmousemove = null;
-            document.body.onmouseup = null;
-        }
+      document.body.ontouchmove = null;
+
+    } else {
+    
+      document.body.onmousemove = null;
+      document.body.onmouseup = null;
+    }
 	},
 
   /**
@@ -100,13 +105,13 @@ var MultiDirectionControl = Class.extend({
    */
 	setTouchPosition: function (event) {
 
-        var pageX = this.touchEnabled ? event.touches[0].pageX : event.pageX;
-        var pageY = this.touchEnabled ? event.touches[0].pageY : event.pageY;
+    var pageX = this.touchSupported ? event.touches[0].pageX : event.pageX;
+    var pageY = this.touchSupported ? event.touches[0].pageY : event.pageY;
 
-        var px = pageX - 40;
-        var py = pageY - 40;            
+    var px = pageX - 40;
+    var py = pageY - 40;            
 
-        this.touch.style.margin = py + 'px 0 0 ' + px  + 'px';  
+    this.touch.style.margin = py + 'px 0 0 ' + px  + 'px';  
 	}
 
 });
