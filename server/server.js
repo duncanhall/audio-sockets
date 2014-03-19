@@ -11,7 +11,7 @@ var app;
 var server;
 var io;
 var slaveID = 0;
-var connections = [];
+var slave;
 var watch = process.argv[2] == "watch"; //Check for a 'watch' argument
 
 
@@ -67,13 +67,12 @@ function listenForConnections () {
 	 * Define listeners for each socket that connects
 	 */
 	io.sockets.on('connection', function (socket) {
-		
-		connections[socket.id] = socket;
 
 		/*
 		 * Relay client commands to the slave
 		 */
 		socket.on(CMD_CLIENT, function(cmd) {
+
 			relayClientCommand(socket.id, cmd);
 		});
 
@@ -81,21 +80,37 @@ function listenForConnections () {
 		 * Identify a slave 
 		 */
 		socket.on('id', function(data) {
-			if (data == 'slave') slaveID = socket.id;
+
+			if (data == 'slave') {
+				
+				slaveID = socket.id;
+				slave = socket;
+			}
 		});
 
 		/*
 		 * Inform slave when a client disconnects
 		 */
 		socket.on('disconnect', function() {
-			relayClientCommand(socket.id, 'disconnect');
+
+			if (socket.id == slaveID) {
+
+				slaveID = 0;
+				slave = undefined;
+			}
+			else {
+
+				relayClientCommand(socket.id, 'disconnect');	
+			}
 		});
 
 	});
 
 
 	var relayClientCommand = function (id, cmd) {
-		connections[slaveID].emit(CMD_CLIENT, String(id) + ':' + cmd);
+
+		if (slave != undefined)
+			slave.emit(CMD_CLIENT, String(id) + ':' + cmd);
 	}
 }
 
