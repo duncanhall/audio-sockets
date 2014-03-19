@@ -32,9 +32,14 @@ var MultiDirectionControl = Class.extend({
 	getOrigin: function () {
 
     var rect = this.element.getBoundingClientRect();
-   	this.origin = {
-   		x:rect.left + ((rect.right - rect.left) / 2), 
-   		y:rect.top + ((rect.bottom - rect.top) / 2)};
+
+    var width = rect.right - rect.left;
+    var height = rect.bottom - rect.top;
+    var x = rect.left + (width / 2);
+    var y = rect.top + (height / 2);
+    var radius = width / 2;
+
+   	this.origin = {x:x, y:y, width:width, height:height, radius:radius};
 	}, 
 
   /**
@@ -108,10 +113,21 @@ var MultiDirectionControl = Class.extend({
     var pageX = this.touchSupported ? event.touches[0].pageX : event.pageX;
     var pageY = this.touchSupported ? event.touches[0].pageY : event.pageY;
 
-    var px = pageX - 40;
-    var py = pageY - 40;            
+    var px = pageX;
+    var py = pageY;            
 
-    this.touch.style.margin = py + 'px 0 0 ' + px  + 'px';  
+    var dx = this.origin.x - px;
+    var dy = this.origin.y - py;
+    var dz = Math.sqrt((dx * dx) + (dy * dy));
+
+    var rq = (this.origin.radius / dz);
+    rq = rq > 1 ? 1 : rq;
+
+    var r = rq;
+    var rx = (r * px + (1 - r) * this.origin.x) - 46;
+    var ry = (r * py + (1 - r) * this.origin.y) - 44;
+
+    this.touch.style.margin = ry + 'px 0 0 ' + rx  + 'px';  
 	}
 
 });
