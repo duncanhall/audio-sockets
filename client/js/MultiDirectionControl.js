@@ -1,24 +1,24 @@
 
 /*
- * MULTI DIRECTION CONTROL
- */
+* MULTI DIRECTION CONTROL
+*/
 var MultiDirectionControl = Class.extend({
-	
-	init: function (element) {
 
-		this.element = element;
-		this.touchSupported = 'ontouchstart' in this.element;
+  init: function (element) {
+
+    this.element = element;
+    this.touchSupported = 'ontouchstart' in this.element;
     this.createTouchPointer();
-		this.getOrigin();
-		this.addTouchListeners();
+    this.getOrigin();
+    this.addTouchListeners();
 
     this.onTouchStart = null;
     this.onTouchStart = null;
-	},
+  },
 
   /**
-   * Create a pointer to show the touch position
-   */
+  * Create a pointer to show the touch position
+  */
   createTouchPointer: function () {
 
     this.touch = document.createElement('div');
@@ -27,9 +27,9 @@ var MultiDirectionControl = Class.extend({
   },
 
   /**
-   * Save reference to the control center origin
-   */
-	getOrigin: function () {
+  * Save reference to the control center origin
+  */
+  getOrigin: function () {
 
     var rect = this.element.getBoundingClientRect();
 
@@ -39,76 +39,76 @@ var MultiDirectionControl = Class.extend({
     var y = rect.top + (height / 2);
     var radius = width / 2;
 
-   	this.origin = {x:x, y:y, width:width, height:height, radius:radius};
-	}, 
+    this.origin = {x:x, y:y, width:width, height:height, radius:radius};
+  }, 
 
   /**
-   * Add listeners for touch or mouse 
-   */
-	addTouchListeners: function () {
+  * Add listeners for touch or mouse 
+  */
+  addTouchListeners: function () {
 
     var scope = this;
 
     if (this.touchSupported) {
 
-        this.element.ontouchstart = function(event){ scope.touchStart(event); }; 
-        this.element.ontouchend = function(event){ scope.touchEnd(event); };
-      
+      this.element.ontouchstart = function(event){ scope.touchStart(event); }; 
+      this.element.ontouchend = function(event){ scope.touchEnd(event); };
+
     } else {
 
-        scope.element.onmousedown = function(event){ scope.touchStart(event); };
+      scope.element.onmousedown = function(event){ scope.touchStart(event); };
     }
-	},
+  },
 
   /**
-   * Touch down
-   */
-	touchStart: function (event) {
+  * Touch down
+  */
+  touchStart: function (event) {
 
     this.onTouchStart();
 
     var scope = this;
 
-		this.setTouchPosition(event);
-		this.touch.style.visibility = 'visible';
+    this.setTouchPosition(event);
+    this.touch.style.visibility = 'visible';
 
     if (this.touchSupported) {
 
       document.body.ontouchmove = function (event) { 
         scope.setTouchPosition(event);
         event.preventDefault();
-      };
+    };
 
     } else {
-        
+
       document.body.onmousemove = function(event){ scope.setTouchPosition(event); };
       document.body.onmouseup = function(event){ scope.touchEnd(event); };
     }		
-	},
-	
+  },
+
   /**
-   * Touch up
-   */  
-	touchEnd: function (event) {
-	
+  * Touch up
+  */  
+  touchEnd: function (event) {
+
     this.onTouchEnd();
-		this.touch.style.visibility = 'hidden';
+    this.touch.style.visibility = 'hidden';
 
     if (this.touchSupported) {
 
       document.body.ontouchmove = null;
 
     } else {
-    
+
       document.body.onmousemove = null;
       document.body.onmouseup = null;
     }
-	},
+  },
 
   /**
-   * Touch move
-   */
-	setTouchPosition: function (event) {
+  * Touch move
+  */
+  setTouchPosition: function (event) {
 
     var pageX = this.touchSupported ? event.touches[0].pageX : event.pageX;
     var pageY = this.touchSupported ? event.touches[0].pageY : event.pageY;
@@ -128,6 +128,6 @@ var MultiDirectionControl = Class.extend({
     var ry = (r * py + (1 - r) * this.origin.y) - 44;
 
     this.touch.style.margin = ry + 'px 0 0 ' + rx  + 'px';  
-	}
+  }
 
 });
