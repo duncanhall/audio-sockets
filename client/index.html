@@ -51,9 +51,29 @@
             width: 200px;
             height: 200px;
             border-radius: 50%;
-            background: #FFFFFF;
+            background-color: #FFFFFF;
             margin: 0 auto 0 auto;
             -webkit-user-select: none;
+        }
+
+        #touchPad.touchdown
+        {
+            background-color: #000000;
+            -webkit-transition: background-color 200ms linear;
+            -moz-transition: background-color 200ms linear;
+            -o-transition: background-color 200ms linear;
+            -ms-transition: background-color 200ms linear;
+            transition: background-color 200ms linear;                  
+        }
+
+        #touchPad.touchup
+        {
+            background-color: #FFFFFF;
+            -webkit-transition: background-color 200ms linear;
+            -moz-transition: background-color 200ms linear;
+            -o-transition: background-color 200ms linear;
+            -ms-transition: background-color 200ms linear;
+            transition: background-color 200ms linear;     
         }
 
         .touch
@@ -61,12 +81,13 @@
             border-radius: 50%;
             width: 80px;
             height: 80px;
-            background-color: #000000;
+            background-color: #FFFFFF;
             visibility: hidden;
             position: absolute;
             z-index: 100;
             -webkit-user-select: none;
         }
+
 
     </style>
 	</head>

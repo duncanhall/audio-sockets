@@ -66,11 +66,11 @@ var MultiDirectionControl = Class.extend({
   touchStart: function (event) {
 
     this.onTouchStart();
-
-    var scope = this;
-
     this.setTouchPosition(event);
     this.touch.style.visibility = 'visible';
+    this.element.className = 'touchdown';
+    
+    var scope = this;
 
     if (this.touchSupported) {
 
@@ -93,6 +93,7 @@ var MultiDirectionControl = Class.extend({
 
     this.onTouchEnd();
     this.touch.style.visibility = 'hidden';
+    this.element.className = 'touchup';
 
     if (this.touchSupported) {
 
