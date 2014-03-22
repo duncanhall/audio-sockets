@@ -12,8 +12,36 @@ var MultiDirectionControl = Class.extend({
     this.getOrigin();
     this.addTouchListeners();
 
+    this.axisSpace = Math.floor(this.element.offsetWidth / 4);
+    this.tx = 0;
+    this.ty = 0;
+
     this.onTouchStart = null;
-    this.onTouchStart = null;
+    this.onTouchEnd = null;
+  },
+
+  addEventListener: function (type, listener) {
+
+    switch (type) {
+
+      case MultiDirectionControl.TOUCH_START:
+        this.onTouchStart = listener;
+        break;
+
+      case MultiDirectionControl.TOUCH_END:
+        this.onTouchEnd = listener;
+        break;
+
+      case MultiDirectionControl.TOUCH_MOVE:
+        this.onTouchMove = listener;
+        break;
+
+      default:
+        console.warn('Unknown event type.');
+        break;
+
+    }
+
   },
 
   /**
@@ -65,7 +93,9 @@ var MultiDirectionControl = Class.extend({
   */
   touchStart: function (event) {
 
-    this.onTouchStart();
+    if (this.onTouchStart != null) 
+      this.onTouchStart();
+
     this.setTouchPosition(event);
     this.touch.style.visibility = 'visible';
     this.element.className = 'touchdown';
@@ -91,7 +121,9 @@ var MultiDirectionControl = Class.extend({
   */  
   touchEnd: function (event) {
 
-    this.onTouchEnd();
+    if (this.onTouchEnd != null)
+      this.onTouchEnd();
+
     this.touch.style.visibility = 'hidden';
     this.element.className = 'touchup';
 
@@ -129,6 +161,29 @@ var MultiDirectionControl = Class.extend({
     var ry = (r * py + (1 - r) * this.origin.y) - 44;
 
     this.touch.style.margin = ry + 'px 0 0 ' + rx  + 'px';  
+
+    if (this.onTouchMove != null)
+    {
+      var zx = Math.abs(Math.abs(pageX) - Math.abs(this.tx));
+      var zy = Math.abs(Math.abs(pageY) - Math.abs(this.ty));
+
+      if (zx > this.axisSpace)
+      {
+        this.tx = pageX;
+        this.onTouchMove(dx, dy);
+      }
+
+      if (zy > this.axisSpace)
+      {
+        this.ty = pageY;
+        this.onTouchMove(dx, dy);
+      }
+    }
   }
 
 });
+
+
+MultiDirectionControl.TOUCH_START = 'mdc:touchStart';
+MultiDirectionControl.TOUCH_END = 'mdc:touchEnd';
+MultiDirectionControl.TOUCH_MOVE = 'mdc:touchMove';

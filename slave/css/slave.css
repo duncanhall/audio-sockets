@@ -6,19 +6,19 @@ body, html {
   position: absolute;
   top: 50%;
   left: 50%;
-  height: 200px;
-  width: 200px;
+  height: 100px;
+  width: 100px;
   margin: -100px auto 0 -100px; }
 
 .instrument {
-  width: 200px;
-  height: 200px;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
   border: 2px solid white;
   display: inline-block;
-  box-shadow: 0 0 50px white;
-  -webkit-box-shadow: 0 0 50px white;
-  -moz-box-shadow: 0 0 50px white;
+  box-shadow: 0 0 30px white;
+  -webkit-box-shadow: 0 0 30px white;
+  -moz-box-shadow: 0 0 30px white;
   transform: scale(0, 0);
   -ms-transform: scale(0, 0);
   -webkit-transform: scale(0, 0);

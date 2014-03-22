@@ -4,6 +4,7 @@ var PUBLIC_EXPR = '/../public';
 var CLIENT_HTML = 'client';
 var SLAVE_HTML = 'slave';
 var CMD_CLIENT = 'cmd-client';
+var CMD_MOVE = 'cmd-move';
 
 var fs = require('fs.extra'); 
 var express;
@@ -76,6 +77,7 @@ function listenForConnections () {
 			relayClientCommand(socket.id, cmd);
 		});
 
+
 		/*
 		 * Identify a slave 
 		 */
@@ -110,7 +112,10 @@ function listenForConnections () {
 	var relayClientCommand = function (id, cmd) {
 
 		if (slave != undefined)
-			slave.emit(CMD_CLIENT, String(id) + ':' + cmd);
+		{	
+			cmd.id = String(id);
+			slave.emit(CMD_CLIENT, cmd);
+		}
 	}
 }
 

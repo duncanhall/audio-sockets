@@ -2,6 +2,7 @@
 	<head>
 	<script src="/socket.io/socket.io.js"></script>
 	<script src="audiosynth/audiosynth.js"></script>
+	<script src="js/raf.js"></script>
 	<script src="js/Class.js"></script>
 	<script src="js/Instrument.js"></script>
 	<script>
@@ -24,14 +25,12 @@
 
 		socket.on("cmd-client", function(data) {
 
-			var delim = data.indexOf(":");
-			var id = data.substr(0, delim);
-			var body = data.substr(delim + 1);
+			var id = data.id;
+			var cmd = data.cmd;
 			var instrument = getClientByID(id);
 
-			switch(body)
+			switch(cmd)
 			{
-
 				case "down":
 					instrument.playIntro();
 					break;
@@ -40,12 +39,18 @@
 					instrument.playOutro();
 					break;
 
+				case "move":
+					var instrument = clients[id];
+					instrument.applyForce(data.dx, data.dy);
+					break;					
+
 				case "disconnect":
 					destroyClient(id);
 					break;
 			}
-
 		});
+
+		animate();
 	}    
 
 	function getClientByID (id) {
@@ -92,6 +97,19 @@
 		output.style.marginLeft = '-' + String(numInstruments * 100) + 'px';		
 	}
 
+	function draw() {
+
+		for (var c in clients) {
+
+			clients[c].step();
+		}
+	}
+
+	function animate() {
+
+	    requestAnimationFrame( animate );
+	    draw();
+	}
 
 	</script>
 	<link rel="stylesheet" href="css/slave.css" />

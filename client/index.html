@@ -4,12 +4,14 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="js/Class.js"></script>
     <script src="js/MultiDirectionControl.js"></script>    
+    <link rel="stylesheet" href="css/client.css" />
     <script>
        
         var SERVER = 'http://22.155.0.3:8000';
         var CMD_ID = 'cmd-client';
         var CMD_UP = 'up';
         var CMD_DOWN = 'down';
+        var CMD_MOVE = 'move';
         var touchPad = null;
 
         function onload()
@@ -20,8 +22,20 @@
             touchPad = document.getElementById('touchPad');
             control = new MultiDirectionControl(touchPad);
 
-            control.onTouchStart = function() { send(CMD_DOWN); }
-            control.onTouchEnd = function() { send(CMD_UP); }           
+            control.addEventListener(MultiDirectionControl.TOUCH_START, function() { 
+
+                send({cmd:CMD_DOWN}); 
+            });
+
+            control.addEventListener(MultiDirectionControl.TOUCH_END, function() { 
+
+                send({cmd:CMD_UP});
+            })    
+
+            control.addEventListener(MultiDirectionControl.TOUCH_MOVE, function(dx, dy) { 
+
+                send({cmd:CMD_MOVE, dx:dx, dy:dy});
+            })              
         }			
 
     	function send(data)
@@ -30,66 +44,6 @@
     	}
 
     </script>		
-    <style>
-    
-        body, html
-        {
-            background-color: #4D4D4D;
-        }
-
-        #container
-        {
-            position: absolute;
-            top: 50%;
-            margin-top: -100px;
-            left: 0;
-            width: 100%;
-        }
-
-        #touchPad
-        {
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            background-color: #FFFFFF;
-            margin: 0 auto 0 auto;
-            -webkit-user-select: none;
-        }
-
-        #touchPad.touchdown
-        {
-            background-color: #000000;
-            -webkit-transition: background-color 200ms linear;
-            -moz-transition: background-color 200ms linear;
-            -o-transition: background-color 200ms linear;
-            -ms-transition: background-color 200ms linear;
-            transition: background-color 200ms linear;                  
-        }
-
-        #touchPad.touchup
-        {
-            background-color: #FFFFFF;
-            -webkit-transition: background-color 200ms linear;
-            -moz-transition: background-color 200ms linear;
-            -o-transition: background-color 200ms linear;
-            -ms-transition: background-color 200ms linear;
-            transition: background-color 200ms linear;     
-        }
-
-        .touch
-        {
-            border-radius: 50%;
-            width: 80px;
-            height: 80px;
-            background-color: #FFFFFF;
-            visibility: hidden;
-            position: absolute;
-            z-index: 100;
-            -webkit-user-select: none;
-        }
-
-
-    </style>
 	</head>
     <body onload="onload();">
         <div id="container">

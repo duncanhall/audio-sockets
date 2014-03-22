@@ -10,6 +10,8 @@ var Instrument = Class.extend({
 		this.outro = outro;
 		this.volumeIn = 1;
 		this.volumeout = 1;
+		this.fx = 0;
+		this.fy = 0;
 
 		this.element = document.createElement('div');
 		this.element.className = 'instrument';
@@ -29,6 +31,21 @@ var Instrument = Class.extend({
 		this.synth.play.apply(this.synth, this.outro.toArgs());
 		this.element.className = 'instrument';		
 		Synth.setVolume(1);
+		this.applyForce(0, 0);
+	},
+
+	applyForce: function (fx, fy) {
+
+		this.fx = fx * 2;
+		this.fy = fy * 2;
+	},
+
+	step: function () {
+
+		var zx = this.element.offsetLeft - this.fx;
+		var zy = this.element.offsetTop - this.fy;
+
+		this.element.style.margin = zy + 'px 0 0 ' + zx  + 'px';
 	},
 
 	destroy: function () {
