@@ -11,6 +11,7 @@
 	var socket = null;
 	var reactor = null;
 	var instruments = [Bass, High, Bass];
+	var colors = [];
 	var numInstruments = 0;
 
 	function onload()
@@ -31,6 +32,12 @@
 
 			switch(cmd)
 			{
+
+				case "hs":
+					instrument.setColor(data.color);
+					colors[id] = data.color;
+					break;
+
 				case "down":
 					instrument.playIntro();
 					break;
@@ -59,6 +66,10 @@
 
 		if (instrument == null) {
 			instrument = createInstrument();
+
+			if (colors[id] != null)
+				instrument.setColor(colors[id]);
+
 			clients[id] = instrument;
 		}
 
@@ -116,8 +127,6 @@
 
 	</head>
 	<body onload="onload();">
-		<div id="container">
 			<div id="output"></div>
-		</div>
 	</body>
 </html>

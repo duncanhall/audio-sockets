@@ -12,9 +12,19 @@ var Instrument = Class.extend({
 		this.volumeout = 1;
 		this.fx = 0;
 		this.fy = 0;
+		this.color = '';
 
 		this.element = document.createElement('div');
 		this.element.className = 'instrument';
+	},
+
+	setColor: function (color) {
+
+		this.color = color;
+		this.element.style.borderColor = '#' + this.color;
+		this.element.style.boxShadow = '0 0 30px #' + this.color;
+		this.element.style.webkitBoxShadow = '0 0 30px #' + this.color;
+		this.element.style.mozBoxShadow = '0 0 30px #' + this.color;
 	},
 
 	playIntro: function () {
@@ -22,6 +32,7 @@ var Instrument = Class.extend({
 		Synth.setVolume(this.volumeIn);
 		this.synth.play.apply(this.synth, this.intro.toArgs());
 		this.element.className = 'instrument grow';		
+
 		Synth.setVolume(1);
 	},
 
@@ -36,8 +47,8 @@ var Instrument = Class.extend({
 
 	applyForce: function (fx, fy) {
 
-		this.fx = fx * 2;
-		this.fy = fy * 2;
+		this.fx = fx;
+		this.fy = fy;
 	},
 
 	step: function () {

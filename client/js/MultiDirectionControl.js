@@ -15,6 +15,7 @@ var MultiDirectionControl = Class.extend({
     this.axisSpace = Math.floor(this.element.offsetWidth / 4);
     this.tx = 0;
     this.ty = 0;
+    this.color = '';
 
     this.onTouchStart = null;
     this.onTouchEnd = null;
@@ -42,6 +43,11 @@ var MultiDirectionControl = Class.extend({
 
     }
 
+  },
+
+  setColor: function (color) {
+
+    this.color = color;
   },
 
   /**
@@ -98,6 +104,7 @@ var MultiDirectionControl = Class.extend({
 
     this.setTouchPosition(event);
     this.touch.style.visibility = 'visible';
+    this.element.style.backgroundColor = '#' + this.color;
     this.element.className = 'touchdown';
     
     var scope = this;
@@ -125,6 +132,7 @@ var MultiDirectionControl = Class.extend({
       this.onTouchEnd();
 
     this.touch.style.visibility = 'hidden';
+    this.element.style.backgroundColor = '#FFFFFF';
     this.element.className = 'touchup';
 
     if (this.touchSupported) {
@@ -153,10 +161,9 @@ var MultiDirectionControl = Class.extend({
     var dy = this.origin.y - py;
     var dz = Math.sqrt((dx * dx) + (dy * dy));
 
-    var rq = (this.origin.radius / dz);
-    rq = rq > 1 ? 1 : rq;
+    var r = (this.origin.radius / dz);
+    r = r > 1 ? 1 : r;
 
-    var r = rq;
     var rx = (r * px + (1 - r) * this.origin.x) - 46;
     var ry = (r * py + (1 - r) * this.origin.y) - 44;
 
@@ -164,18 +171,18 @@ var MultiDirectionControl = Class.extend({
 
     if (this.onTouchMove != null)
     {
-      var zx = Math.abs(Math.abs(pageX) - Math.abs(this.tx));
-      var zy = Math.abs(Math.abs(pageY) - Math.abs(this.ty));
+      var zx = Math.abs(Math.abs(rx) - Math.abs(this.tx));
+      var zy = Math.abs(Math.abs(ry) - Math.abs(this.ty));
 
       if (zx > this.axisSpace)
       {
-        this.tx = pageX;
+        this.tx = rx;
         this.onTouchMove(dx, dy);
       }
 
       if (zy > this.axisSpace)
       {
-        this.ty = pageY;
+        this.ty = ry;
         this.onTouchMove(dx, dy);
       }
     }

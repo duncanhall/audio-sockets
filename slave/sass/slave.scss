@@ -1,5 +1,5 @@
 
-$bgColor: #4D4D4D;
+$bgColor: #212121;
 $rDiameter: 100px;
 $rBorderColor: rgba(255, 255, 255, 1);
 $rGlowColor: rgba(255, 255, 255, 1);
@@ -31,6 +31,7 @@ body, html
   border-radius: 50%;
   border: 2px solid $rBorderColor;
   display: inline-block;
+  position: absolute;
   box-shadow: 0 0 $rGlowSize $rGlowColor;
   -webkit-box-shadow: 0 0 $rGlowSize $rGlowColor; 
   -moz-box-shadow: 0 0 $rGlowSize $rGlowColor; 

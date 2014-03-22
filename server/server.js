@@ -15,6 +15,9 @@ var slaveID = 0;
 var slave;
 var watch = process.argv[2] == "watch"; //Check for a 'watch' argument
 
+var colors = ['FFFFFF', '6AF0E1', 'FFCC00'];
+var numClients = 0;
+
 
 /*
  * Clear the public directory
@@ -88,6 +91,15 @@ function listenForConnections () {
 				slaveID = socket.id;
 				slave = socket;
 			}
+
+			if (data == 'client') {
+				
+				var c = getColor();
+				socket.emit('hs', c);
+				relayClientCommand(socket.id, {cmd:'hs', color:c});	
+				
+				numClients++;
+			}			
 		});
 
 		/*
@@ -102,7 +114,8 @@ function listenForConnections () {
 			}
 			else {
 
-				relayClientCommand(socket.id, 'disconnect');	
+				numClients--;
+				relayClientCommand(socket.id, {cmd:'disconnect'});	
 			}
 		});
 
@@ -116,6 +129,11 @@ function listenForConnections () {
 			cmd.id = String(id);
 			slave.emit(CMD_CLIENT, cmd);
 		}
+	}
+
+	var getColor = function () {
+
+		return colors[numClients];
 	}
 }
 

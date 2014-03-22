@@ -1,5 +1,5 @@
 body, html {
-  background-color: #4d4d4d;
+  background-color: #212121;
   padding: 10px; }
 
 #output {
@@ -16,6 +16,7 @@ body, html {
   border-radius: 50%;
   border: 2px solid white;
   display: inline-block;
+  position: absolute;
   box-shadow: 0 0 30px white;
   -webkit-box-shadow: 0 0 30px white;
   -moz-box-shadow: 0 0 30px white;

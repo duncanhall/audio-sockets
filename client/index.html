@@ -9,18 +9,29 @@
        
         var SERVER = 'http://22.155.0.3:8000';
         var CMD_ID = 'cmd-client';
+        var CMD_HS = 'hs';
         var CMD_UP = 'up';
         var CMD_DOWN = 'down';
         var CMD_MOVE = 'move';
         var touchPad = null;
 
+
         function onload()
     	{			
             socket = io.connect(SERVER);
-            socket.on("connect", function() { /* CONNECTED */ });
+            socket.on("connect", function() { 
+
+                socket.emit("id", "client");
+             });
+
+            socket.on("hs", function(color) { 
+                
+                control.setColor(color);
+             });
 
             touchPad = document.getElementById('touchPad');
             control = new MultiDirectionControl(touchPad);
+            
 
             control.addEventListener(MultiDirectionControl.TOUCH_START, function() { 
 
