@@ -13,6 +13,7 @@ var Instrument = Class.extend({
 		this.fx = 0;
 		this.fy = 0;
 		this.color = '';
+		this.active = false;
 
 		this.element = document.createElement('div');
 		this.element.className = 'instrument';
@@ -35,16 +36,18 @@ var Instrument = Class.extend({
 
 		Synth.setVolume(1);
 		this.applyForce(this.randomRangeNegative(40), this.randomRangeNegative(40));
+		this.active = true;
 	},
 
 	stop: function () {
 
+		this.applyForce(0, 0);
 		Synth.setVolume(this.volumeout);
 		this.synth.play.apply(this.synth, this.outro.toArgs());
 		this.element.className = 'instrument';
 
 		Synth.setVolume(1);
-		this.applyForce(0, 0);
+		this.active = false;
 	},
 
 	applyForce: function (fx, fy) {
@@ -58,7 +61,20 @@ var Instrument = Class.extend({
 		var zx = this.element.offsetLeft - this.fx;
 		var zy = this.element.offsetTop - this.fy;
 
+		if (zx <= this.minX || zx >= this.maxX)
+			this.fx *= -1;
+		if (zy <= this.minY || zy >= this.maxY)
+			this.fy *= -1;
+
 		this.element.style.margin = zy + 'px 0 0 ' + zx  + 'px';
+	},
+
+	setBounds: function (top, right, bottom, left) {
+
+		this.minY = top;
+		this.maxX = right;
+		this.maxY = bottom;
+		this.minX = left;
 	},
 
 	destroy: function () {

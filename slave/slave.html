@@ -20,6 +20,15 @@
 		socket = io.connect('http://22.155.0.3:8000');
 		clients = [];
 
+		window.onresize = function (event)
+		{
+			var bounds = getBounds();
+			for (var i in clients) {
+
+				setBounds(clients[i], bounds);
+			}			
+		}
+
 		socket.on("connect", function() {
 			socket.emit("id", "slave");
 		});
@@ -61,6 +70,8 @@
 
 		if (instrument == null) {
 			instrument = createInstrument();
+
+			setBounds(instrument, getBounds());
 
 			if (colors[id] != null)
 				instrument.setColor(colors[id]);
@@ -105,9 +116,12 @@
 
 	function draw() {
 
-		for (var c in clients) {
+		var c = null;
+		for (var i in clients) {
 
-			clients[c].step();
+			c = clients[i];
+			if (c.active)
+				c.step();
 		}
 	}
 
@@ -115,6 +129,21 @@
 
 	    requestAnimationFrame( animate );
 	    draw();
+	}
+
+	function getBounds() {
+
+		var left = ((window.innerWidth / 2) * -1) + 100;
+		var right = (window.innerWidth / 2) + 100;
+		var top = ((window.innerHeight / 2 ) * -1) + 50;
+		var bottom = (window.innerHeight / 2) + 20;		
+
+		return {x:left, w:right, y:top, h:bottom};
+	}
+
+	function setBounds (instrument, bounds) {
+
+		instrument.setBounds(bounds.y, bounds.w, bounds.h, bounds.x);
 	}
 
 	</script>
