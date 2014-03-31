@@ -13,6 +13,8 @@
 	var instruments = [Bass, High, Bass];
 	var colors = [];
 	var numInstruments = 0;
+	var timer;
+	var active = 0;
 
 	function onload()
 	{     
@@ -48,10 +50,18 @@
 					break;
 
 				case "down":
+					if (active < 1)
+						timer = setInterval(stepAudio, 80);
+
+					active++;
 					instrument.start();
 					break;
 
 				case "up":
+					active--;
+					if (active < 1)
+						clearInterval(timer);
+					
 					instrument.stop();
 					break;					
 
@@ -125,6 +135,17 @@
 		}
 	}
 
+	function stepAudio () {
+
+		var c = null;
+		for (var i in clients) {
+
+			c = clients[i];
+			if (c.active)
+				c.playNextNote();
+		}
+	}
+
 	function animate() {
 
 	    requestAnimationFrame( animate );
@@ -134,7 +155,7 @@
 	function getBounds() {
 
 		var left = ((window.innerWidth / 2) * -1) + 100;
-		var right = (window.innerWidth / 2) + 100;
+		var right = (window.innerWidth / 2);
 		var top = ((window.innerHeight / 2 ) * -1) + 50;
 		var bottom = (window.innerHeight / 2) + 20;		
 

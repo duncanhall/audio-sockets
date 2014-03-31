@@ -3,11 +3,11 @@
  */
 var Instrument = Class.extend({
 
-	init: function (synth, intro, outro) {
+	init: function (synth, notes) {
 
 		this.synth = synth;
-		this.intro = intro;
-		this.outro = outro;
+		this.n = 0;
+		this.notes = notes;
 		this.volumeIn = 1;
 		this.volumeout = 1;
 		this.fx = 0;
@@ -28,26 +28,24 @@ var Instrument = Class.extend({
 		this.element.style.mozBoxShadow = '0 0 30px #' + this.color;
 	},
 
+	playNextNote: function () {
+
+		this.synth.play.apply(this.synth, this.notes[this.n++].toArgs());
+		this.n = this.n > 2 ? 0 : this.n;
+	},
+
 	start: function () {
 
-		Synth.setVolume(this.volumeIn);
-		this.synth.play.apply(this.synth, this.intro.toArgs());
-		this.element.className = 'instrument grow';		
-
-		Synth.setVolume(1);
-		this.applyForce(this.randomRangeNegative(40), this.randomRangeNegative(40));
 		this.active = true;
+		this.element.className = 'instrument grow';		
+		this.applyForce(this.randomRangeNegative(40), this.randomRangeNegative(40));
 	},
 
 	stop: function () {
 
-		this.applyForce(0, 0);
-		Synth.setVolume(this.volumeout);
-		this.synth.play.apply(this.synth, this.outro.toArgs());
-		this.element.className = 'instrument';
-
-		Synth.setVolume(1);
 		this.active = false;
+		this.applyForce(0, 0);
+		this.element.className = 'instrument';
 	},
 
 	applyForce: function (fx, fy) {
@@ -99,8 +97,8 @@ var Bass = Instrument.extend({
 
 	init: function () {
 
-		this._super(Synth.createInstrument('organ'), 
-			new Note('C', 1, 1), new Note('C', 2, 1));
+		this._super(Synth.createInstrument('piano'), 
+			[new Note('A', 2, 0.2), new Note('C', 2, 0.2), new Note('D', 2, 0.2)]);
 	}	
 
 });
@@ -113,8 +111,8 @@ var Mid = Instrument.extend({
 
 	init: function (synth) {
 
-		this._super(Synth.createInstrument('organ'), 
-			new Note('C', 4, 1.4), new Note('A', 2, 1));
+		this._super(Synth.createInstrument('piano'), 
+			[new Note('A', 2, 0.2), new Note('C', 2, 0.2), new Note('D', 2, 0.2)]);
 
 		this.volumeIn = 0.8;
 		this.volumeout = 0.7;
@@ -130,8 +128,8 @@ var High = Instrument.extend({
 
 	init: function (synth) {
 
-		this._super(Synth.createInstrument('organ'), 
-			new Note('G', 1, 1), new Note('G', 2, 1));
+		this._super(Synth.createInstrument('piano'), 
+			[new Note('A', 3, 0.2), new Note('C', 3, 0.2), new Note('D', 3, 0.2)]);
 
 		this.volumeIn = 0.9;
 		this.volumeout = 0.7;
