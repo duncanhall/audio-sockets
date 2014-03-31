@@ -39,16 +39,11 @@
 					break;
 
 				case "down":
-					instrument.playIntro();
+					instrument.start();
 					break;
 
 				case "up":
-					instrument.playOutro();
-					break;
-
-				case "move":
-					var instrument = clients[id];
-					instrument.applyForce(data.dx, data.dy);
+					instrument.stop();
 					break;					
 
 				case "disconnect":

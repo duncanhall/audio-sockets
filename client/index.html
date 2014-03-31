@@ -32,7 +32,6 @@
             touchPad = document.getElementById('touchPad');
             control = new MultiDirectionControl(touchPad);
             
-
             control.addEventListener(MultiDirectionControl.TOUCH_START, function() { 
 
                 send({cmd:CMD_DOWN}); 
@@ -42,11 +41,7 @@
 
                 send({cmd:CMD_UP});
             })    
-
-            control.addEventListener(MultiDirectionControl.TOUCH_MOVE, function(dx, dy) { 
-
-                send({cmd:CMD_MOVE, dx:dx, dy:dy});
-            })              
+             
         }			
 
     	function send(data)

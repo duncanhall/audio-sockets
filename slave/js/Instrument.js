@@ -27,20 +27,22 @@ var Instrument = Class.extend({
 		this.element.style.mozBoxShadow = '0 0 30px #' + this.color;
 	},
 
-	playIntro: function () {
+	start: function () {
 
 		Synth.setVolume(this.volumeIn);
 		this.synth.play.apply(this.synth, this.intro.toArgs());
 		this.element.className = 'instrument grow';		
 
 		Synth.setVolume(1);
+		this.applyForce(this.randomRangeNegative(40), this.randomRangeNegative(40));
 	},
 
-	playOutro: function () {
+	stop: function () {
 
 		Synth.setVolume(this.volumeout);
 		this.synth.play.apply(this.synth, this.outro.toArgs());
-		this.element.className = 'instrument';		
+		this.element.className = 'instrument';
+
 		Synth.setVolume(1);
 		this.applyForce(0, 0);
 	},
@@ -63,7 +65,13 @@ var Instrument = Class.extend({
 
 		this.element = null;
 		this.synth = null;
-	}
+	},
+
+	randomRangeNegative: function (pos) {
+
+		var r = Math.random() * pos;
+		return r *= Math.floor(Math.random() * 2) == 1 ? 1 : -1;
+	}	
 
 });
 
