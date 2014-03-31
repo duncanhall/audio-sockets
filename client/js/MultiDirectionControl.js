@@ -12,7 +12,7 @@ var MultiDirectionControl = Class.extend({
     this.getOrigin();
     this.addTouchListeners();
 
-    this.axisSpace = Math.floor(this.element.offsetWidth / 4);
+    this.axisSpace = Math.floor(this.element.offsetWidth / 10);
     this.tx = 0;
     this.ty = 0;
     this.color = '';
@@ -132,7 +132,7 @@ var MultiDirectionControl = Class.extend({
       this.onTouchEnd();
 
     this.touch.style.visibility = 'hidden';
-    this.element.style.backgroundColor = '#FFFFFF';
+    this.element.style.backgroundColor = '#000000';
     this.element.className = 'touchup';
 
     if (this.touchSupported) {

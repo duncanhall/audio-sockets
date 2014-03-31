@@ -17,7 +17,7 @@ body, html
     width: 160px;
     height: 160px;
     border-radius: 50%;
-    background-color: #FFFFFF;
+    background-color: #000000;
     margin: 0 auto 0 auto;
     -webkit-user-select: none;
 }
@@ -33,7 +33,7 @@ body, html
 
 #touchPad.touchup
 {
-    background-color: #FFFFFF;
+    background-color: #000000;
     -webkit-transition: background-color 200ms linear;
     -moz-transition: background-color 200ms linear;
     -o-transition: background-color 200ms linear;
