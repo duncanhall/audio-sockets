@@ -5,6 +5,7 @@
 	<script src="js/raf.js"></script>
 	<script src="js/Class.js"></script>
 	<script src="js/Instrument.js"></script>
+	<script src="js/Controller.js"></script>
 	<script>
 
 	var output = null;
@@ -16,18 +17,19 @@
 	var timer;
 	var active = 0;
 
+	var controller = new Controller();
+
 	function onload()
 	{     
 		output = document.getElementById('output');
 		socket = io.connect('http://22.155.0.3:8000');
-		clients = [];
 
 		window.onresize = function (event)
 		{
 			var bounds = getBounds();
-			for (var i in clients) {
+			for (var i in controller.clients) {
 
-				setBounds(clients[i], bounds);
+				setBounds(controller.clients[i], bounds);
 			}			
 		}
 
@@ -39,22 +41,26 @@
 
 			var id = data.id;
 			var cmd = data.cmd;
-			var instrument = getClientByID(id);
 
 			switch(cmd)
 			{
 
 				case "hs":
+					
+					instrument = createInstrument(id);
 					instrument.setColor(data.color);
+					instrument.setColor(data.color);
+					setBounds(instrument, getBounds());
 					colors[id] = data.color;
 					break;
 
 				case "down":
+
 					if (active < 1)
 						timer = setInterval(stepAudio, 80);
 
 					active++;
-					instrument.start();
+					controller.execute(id, Controller.START);
 					break;
 
 				case "up":
@@ -62,7 +68,7 @@
 					if (active < 1)
 						clearInterval(timer);
 					
-					instrument.stop();
+					controller.execute(id, Controller.STOP);
 					break;					
 
 				case "disconnect":
@@ -74,44 +80,16 @@
 		animate();
 	}    
 
-	function getClientByID (id) {
-
-		var instrument = clients[id];
-
-		if (instrument == null) {
-			instrument = createInstrument();
-
-			setBounds(instrument, getBounds());
-
-			if (colors[id] != null)
-				instrument.setColor(colors[id]);
-
-			clients[id] = instrument;
-		}
-
-		return instrument;
-	}
-
 	function destroyClient(id) {
 
-		var instrument = clients[id];
-
-		if (instrument != null) {
-			numInstruments--;
-			output.removeChild(instrument.element);
-			instrument.destroy();
-			updateOutput();
-		}
-
-		clients[id] = null;
-		delete clients[id];
+		output.removeChild(controller.getClientById(id).element); //Todo: not this
+		controller.destroyClient(id);
+		updateOutput();
 	}
 
-	function createInstrument () {
+	function createInstrument (id) {
 
-		var instrument = new instruments[numInstruments]();
-
-		numInstruments++;
+		var instrument = controller.addClient(instruments[numInstruments], id);
 		output.appendChild(instrument.element);
 		updateOutput();
 
@@ -127,9 +105,9 @@
 	function draw() {
 
 		var c = null;
-		for (var i in clients) {
+		for (var i in controller.clients) {
 
-			c = clients[i];
+			c = controller.clients[i];
 			if (c.active)
 				c.step();
 		}
@@ -138,9 +116,9 @@
 	function stepAudio () {
 
 		var c = null;
-		for (var i in clients) {
+		for (var i in controller.clients) {
 
-			c = clients[i];
+			c = controller.clients[i];
 			if (c.active)
 				c.playNextNote();
 		}
