@@ -10,28 +10,25 @@
 
 	var output = null;
 	var socket = null;
-	var reactor = null;
-	var instruments = [Bass, High, Bass];
 	var colors = [];
-	var numInstruments = 0;
 	var timer;
 	var active = 0;
 
 	var controller = new Controller();
+
+	var minX = 0;
+	var maxX = 0;
+	var minY = 0;
+	var maxY = 0;		
+
 
 	function onload()
 	{     
 		output = document.getElementById('output');
 		socket = io.connect('http://22.155.0.3:8000');
 
-		window.onresize = function (event)
-		{
-			var bounds = getBounds();
-			for (var i in controller.clients) {
-
-				setBounds(controller.clients[i], bounds);
-			}			
-		}
+		setBounds();
+		window.onresize = setBounds;
 
 		socket.on("connect", function() {
 			socket.emit("id", "slave");
@@ -47,10 +44,8 @@
 
 				case "hs":
 					
-					instrument = createInstrument(id);
+					instrument = controller.addClient(output, Bass, id);
 					instrument.setColor(data.color);
-					instrument.setColor(data.color);
-					setBounds(instrument, getBounds());
 					colors[id] = data.color;
 					break;
 
@@ -72,35 +67,13 @@
 					break;					
 
 				case "disconnect":
-					destroyClient(id);
+					controller.destroyClient(id);
 					break;
 			}
 		});
 
 		animate();
-	}    
-
-	function destroyClient(id) {
-
-		output.removeChild(controller.getClientById(id).element); //Todo: not this
-		controller.destroyClient(id);
-		updateOutput();
-	}
-
-	function createInstrument (id) {
-
-		var instrument = controller.addClient(instruments[numInstruments], id);
-		output.appendChild(instrument.element);
-		updateOutput();
-
-		return instrument;
-	}	
-
-	function updateOutput () {
-
-		output.style.width = String(numInstruments * 210) + 'px';
-		output.style.marginLeft = '-' + String(numInstruments * 100) + 'px';		
-	}
+	}    	
 
 	function draw() {
 
@@ -109,7 +82,16 @@
 
 			c = controller.clients[i];
 			if (c.active)
+			{
 				c.step();
+
+				if (c.x <= minX || c.x >= maxX)
+					c.bounce(-1, 1);
+				if (c.y <= minY || c.y >= maxY)
+					c.bounce(1, -1);
+
+				c.element.style.margin = c.y + 'px 0 0 ' + c.x  + 'px';
+			}
 		}
 	}
 
@@ -130,19 +112,12 @@
 	    draw();
 	}
 
-	function getBounds() {
+	function setBounds(event) {
 
-		var left = ((window.innerWidth / 2) * -1) + 100;
-		var right = (window.innerWidth / 2);
-		var top = ((window.innerHeight / 2 ) * -1) + 50;
-		var bottom = (window.innerHeight / 2) + 20;		
-
-		return {x:left, w:right, y:top, h:bottom};
-	}
-
-	function setBounds (instrument, bounds) {
-
-		instrument.setBounds(bounds.y, bounds.w, bounds.h, bounds.x);
+		minX = ((window.innerWidth / 2) * -1);
+		maxX = (window.innerWidth / 2) - 50;
+		minY = ((window.innerHeight / 2 ) * -1) + 50;
+		maxY = (window.innerHeight / 2);		
 	}
 
 	</script>

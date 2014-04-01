@@ -51,8 +51,8 @@ var MultiDirectionControl = Class.extend({
   },
 
   /**
-  * Create a pointer to show the touch position
-  */
+   * Create a pointer to show the touch position
+   */
   createTouchPointer: function () {
 
     this.touch = document.createElement('div');
@@ -61,8 +61,8 @@ var MultiDirectionControl = Class.extend({
   },
 
   /**
-  * Save reference to the control center origin
-  */
+   * Save reference to the control center origin
+   */
   getOrigin: function () {
 
     var rect = this.element.getBoundingClientRect();
@@ -95,14 +95,14 @@ var MultiDirectionControl = Class.extend({
   },
 
   /**
-  * Touch down
-  */
+   * Touch down
+   */
   touchStart: function (event) {
 
     if (this.onTouchStart != null) 
       this.onTouchStart();
 
-    this.setTouchPosition(event);
+    this.touchMove(event);
     this.touch.style.visibility = 'visible';
     this.element.style.backgroundColor = '#' + this.color;
     this.element.className = 'touchdown';
@@ -112,20 +112,20 @@ var MultiDirectionControl = Class.extend({
     if (this.touchSupported) {
 
       document.body.ontouchmove = function (event) { 
-        scope.setTouchPosition(event);
+        scope.touchMove(event);
         event.preventDefault();
     };
 
     } else {
 
-      document.body.onmousemove = function(event){ scope.setTouchPosition(event); };
+      document.body.onmousemove = function(event){ scope.touchMove(event); };
       document.body.onmouseup = function(event){ scope.touchEnd(event); };
     }		
   },
 
   /**
-  * Touch up
-  */  
+   * Touch up
+   */  
   touchEnd: function (event) {
 
     if (this.onTouchEnd != null)
@@ -147,27 +147,31 @@ var MultiDirectionControl = Class.extend({
   },
 
   /**
-  * Touch move
-  */
-  setTouchPosition: function (event) {
+   * Touch move
+   */
+  touchMove: function (event) {
 
     var pageX = this.touchSupported ? event.touches[0].pageX : event.pageX;
-    var pageY = this.touchSupported ? event.touches[0].pageY : event.pageY;
+    var pageY = this.touchSupported ? event.touches[0].pageY : event.pageY;        
 
-    var px = pageX;
-    var py = pageY;            
-
-    var dx = this.origin.x - px;
-    var dy = this.origin.y - py;
+    var dx = this.origin.x - pageX;
+    var dy = this.origin.y - pageY;
     var dz = Math.sqrt((dx * dx) + (dy * dy));
 
     var r = (this.origin.radius / dz);
     r = r > 1 ? 1 : r;
 
-    var rx = (r * px + (1 - r) * this.origin.x) - 46;
-    var ry = (r * py + (1 - r) * this.origin.y) - 44;
+    var rx = (r * pageX + (1 - r) * this.origin.x) - 46;
+    var ry = (r * pageY + (1 - r) * this.origin.y) - 44;
 
     this.touch.style.margin = ry + 'px 0 0 ' + rx  + 'px';  
+    this.setControlValues(rx, ry, dx, dy);
+  },
+
+  /**
+   * Check for change in control point
+   */
+  setControlValues: function (rx, ry, dx, dy) {
 
     if (this.onTouchMove != null)
     {

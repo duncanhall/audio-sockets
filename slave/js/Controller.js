@@ -12,9 +12,9 @@ var Controller = Class.extend({
 	 * Create a new client of Type and associate it with
 	 * its socket ID.
 	 */ 
-	addClient: function (Type, id) {
+	addClient: function (parent, Type, id) {
 
-		var client = new Type();
+		var client = new Type(parent);
 		this.clients[id] = client;
 		this.numClients++;
 
@@ -30,7 +30,7 @@ var Controller = Class.extend({
 	},
 
 	/**
-	 * Execute a a command on a specific client
+	 * Execute a command on a specific client
 	 */
 	execute: function (clientId, command) {
 
@@ -49,11 +49,11 @@ var Controller = Class.extend({
 	},
 
 	/**
-	 * Execute a a command on a specific client
+	 * Destroy a specific client 
 	 */
 	destroyClient: function (id) {
 
-		var client = this.getClientById(clientId);
+		var client = this.getClientById(id);
 
 		if (client != null)
 		{

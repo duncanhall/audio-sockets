@@ -3,8 +3,9 @@
  */
 var Instrument = Class.extend({
 
-	init: function (synth, notes) {
+	init: function (parent, synth, notes) {
 
+		this.parent = parent;
 		this.synth = synth;
 		this.n = 0;
 		this.notes = notes;
@@ -17,6 +18,7 @@ var Instrument = Class.extend({
 
 		this.element = document.createElement('div');
 		this.element.className = 'instrument';
+		this.parent.appendChild(this.element);
 	},
 
 	setColor: function (color) {
@@ -56,27 +58,19 @@ var Instrument = Class.extend({
 
 	step: function () {
 
-		var zx = this.element.offsetLeft - this.fx;
-		var zy = this.element.offsetTop - this.fy;
-
-		if (zx <= this.minX || zx >= this.maxX)
-			this.fx *= -1;
-		if (zy <= this.minY || zy >= this.maxY)
-			this.fy *= -1;
-
-		this.element.style.margin = zy + 'px 0 0 ' + zx  + 'px';
+		this.x = this.element.offsetLeft - this.fx;
+		this.y = this.element.offsetTop - this.fy;
 	},
 
-	setBounds: function (top, right, bottom, left) {
+	bounce: function (fx, fy) {
 
-		this.minY = top;
-		this.maxX = right;
-		this.maxY = bottom;
-		this.minX = left;
+		this.fx *= fx;
+		this.fy *= fy;
 	},
 
 	destroy: function () {
 
+		this.parent.removeChild(this.element);
 		this.element = null;
 		this.synth = null;
 	},
@@ -95,45 +89,11 @@ var Instrument = Class.extend({
  */
 var Bass = Instrument.extend({
 
-	init: function () {
+	init: function (parent) {
 
-		this._super(Synth.createInstrument('piano'), 
+		this._super(parent, Synth.createInstrument('piano'), 
 			[new Note('A', 2, 0.2), new Note('C', 2, 0.2), new Note('D', 2, 0.2)]);
 	}	
-
-});
-
-
-/*
- * MID
- */
-var Mid = Instrument.extend({
-
-	init: function (synth) {
-
-		this._super(Synth.createInstrument('piano'), 
-			[new Note('A', 2, 0.2), new Note('C', 2, 0.2), new Note('D', 2, 0.2)]);
-
-		this.volumeIn = 0.8;
-		this.volumeout = 0.7;
-	}
-
-});
-
-
-/*
- * HIGH
- */
-var High = Instrument.extend({
-
-	init: function (synth) {
-
-		this._super(Synth.createInstrument('piano'), 
-			[new Note('A', 3, 0.2), new Note('C', 3, 0.2), new Note('D', 3, 0.2)]);
-
-		this.volumeIn = 0.9;
-		this.volumeout = 0.7;
-	}
 
 });
 
