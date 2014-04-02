@@ -44,8 +44,7 @@
 
 				case "hs":
 					
-					instrument = controller.addClient(output, Bass, id);
-					instrument.setColor(data.color);
+					instrument = controller.addClient(output, id, data.color);
 					colors[id] = data.color;
 					break;
 

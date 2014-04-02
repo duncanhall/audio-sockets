@@ -3,17 +3,15 @@
  */
 var Instrument = Class.extend({
 
-	init: function (parent, synth, notes) {
+	init: function (parent, color) {
 
 		this.parent = parent;
-		this.synth = synth;
+		this.color = color;
+		this.synth = Synth.createInstrument('piano');
+		this.notes = [new Note('A', 2, 0.2), new Note('C', 2, 0.2), new Note('D', 2, 0.2)];
 		this.n = 0;
-		this.notes = notes;
-		this.volumeIn = 1;
-		this.volumeout = 1;
 		this.fx = 0;
 		this.fy = 0;
-		this.color = '';
 		this.active = false;
 
 		this.element = document.createElement('div');
@@ -79,20 +77,6 @@ var Instrument = Class.extend({
 
 		var r = Math.random() * pos;
 		return r *= Math.floor(Math.random() * 2) == 1 ? 1 : -1;
-	}	
-
-});
-
-
-/*
- * BASS
- */
-var Bass = Instrument.extend({
-
-	init: function (parent) {
-
-		this._super(parent, Synth.createInstrument('piano'), 
-			[new Note('A', 2, 0.2), new Note('C', 2, 0.2), new Note('D', 2, 0.2)]);
 	}	
 
 });

@@ -9,12 +9,12 @@ var Controller = Class.extend({
 	},
 
 	/**
-	 * Create a new client of Type and associate it with
+	 * Create a new client Instrument and associate it with
 	 * its socket ID.
 	 */ 
-	addClient: function (parent, Type, id) {
+	addClient: function (parent, id, color) {
 
-		var client = new Type(parent);
+		var client = new Instrument(parent, color);
 		this.clients[id] = client;
 		this.numClients++;
 
