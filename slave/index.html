@@ -2,8 +2,9 @@
 	<head>
 	<script src="/socket.io/socket.io.js"></script>
 	<script src="audiosynth/audiosynth.js"></script>
+	<script src="../common/js/Class.js"></script>
+	<script src="../common/js/ClientCommand.js"></script>
 	<script src="js/raf.js"></script>
-	<script src="js/Class.js"></script>
 	<script src="js/Instrument.js"></script>
 	<script src="js/ClientController.js"></script>
 	<script src="js/AudioController.js"></script>
@@ -42,13 +43,13 @@
 			switch(cmd)
 			{
 
-				case "hs":
+				case ClientCommand.HAND_SHAKE:
 					
 					instrument = clients.add(output, id, data.color);
 					colors[id] = data.color;
 					break;
 
-				case "down":
+				case ClientCommand.START:
 
 					if (!clients.hasActiveClients())
 					{
@@ -59,7 +60,7 @@
 					clients.execute(id, ClientController.START);
 					break;
 
-				case "up":
+				case ClientCommand.STOP:
 
 					clients.execute(id, ClientController.STOP);
 
@@ -70,7 +71,7 @@
 					}					
 					break;					
 
-				case "disconnect":
+				case ClientCommand.DISCONNECT:
 					clients.destroy(id);
 					break;
 			}

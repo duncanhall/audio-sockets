@@ -1,18 +1,18 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <script src="/socket.io/socket.io.js"></script>
-    <script src="js/Class.js"></script>
+    <script src="common/js/Class.js"></script>
+    <script src="common/js/ClientCommand.js"></script>
     <script src="js/MultiDirectionControl.js"></script>    
     <link rel="stylesheet" href="css/client.css" />
     <script>
        
         var SERVER = 'http://22.155.0.3:8000';
         var CMD_ID = 'cmd-client';
-        var CMD_HS = 'hs';
-        var CMD_UP = 'up';
-        var CMD_DOWN = 'down';
-        var CMD_MOVE = 'move';
+        var CMD_UP = ClientCommand.STOP;
+        var CMD_DOWN = ClientCommand.START;
         var touchPad = null;
 
 
@@ -24,7 +24,7 @@
                 socket.emit("id", "client");
              });
 
-            socket.on("hs", function(color) { 
+            socket.on(ClientCommand.HAND_SHAKE, function(color) { 
                 
                 control.setColor(color);
             });

@@ -1,57 +1,23 @@
 
-var PUBLIC_HTML = './public';
-var PUBLIC_EXPR = '/../public';
-var CLIENT_HTML = 'client';
-var SLAVE_HTML = 'slave';
-var CMD_CLIENT = 'cmd-client';
-var CMD_MOVE = 'cmd-move';
 
-var fs = require('fs.extra'); 
+var CLIENT_HTML = '/../client';
+var SLAVE_HTML = '/../slave';
+var COMMON_HTML = '/../common';
+
+var CMD_CLIENT = 'cmd-client';
+var HAND_SHAKE = 'as-cc:hs';
+var DISCONNECT = 'as-cc:dc';
+
 var express;
 var app;
 var server;
 var io;
 var slaveID = 0;
 var slave;
-var watch = process.argv[2] == "watch"; //Check for a 'watch' argument
-
 var colors = ['FFFFFF', '6AF0E1', 'FFCC00'];
 var numClients = 0;
 
-
-/*
- * Clear the public directory
- */
-fs.rmrf(PUBLIC_HTML, function (error) {
-	if (error) return console.error('rmrf: ' + error);
-
-	/*
-	 * Copy the client to the public directory
-	 */
-	fs.copyRecursive(CLIENT_HTML, PUBLIC_HTML, function (error) { 
-		if (error) return console.error('Copy client: ' + error);
-
-		/*
-		 * Copy the slave to the public directory
-		 */
-		fs.copyRecursive(SLAVE_HTML, PUBLIC_HTML, function (error) { 
-			if (error) return console.error('Copy slave: ' + error); 
-
-			/*
-			 * Filesystem ready
-			 */
-			listenForConnections();
-
-			/*
-			 * Watch for changes
-			 */
-			if (watch) watchFiles();
-
-		});
-
-	});
-
-});
+listenForConnections();
 
 
 function listenForConnections () {
@@ -61,10 +27,10 @@ function listenForConnections () {
 	server = require('http').createServer(app);
 	io = require('socket.io').listen(server);
 
-	/*
-	 * Serve the contents of the /public/ folder on port 8000
-	 */
-	app.use("/", express.static(__dirname + PUBLIC_EXPR));
+	app.use("/", express.static(__dirname + CLIENT_HTML));
+	app.use("/common", express.static(__dirname + COMMON_HTML));
+	app.use("/slave", express.static(__dirname + SLAVE_HTML));
+
 	server.listen(8000);
 
 	/*
@@ -73,16 +39,15 @@ function listenForConnections () {
 	io.sockets.on('connection', function (socket) {
 
 		/*
-		 * Relay client commands to the slave
+		 * Receive a client command
 		 */
 		socket.on(CMD_CLIENT, function(cmd) {
 
 			relayClientCommand(socket.id, cmd);
 		});
 
-
 		/*
-		 * Identify a slave 
+		 * Socket is identifying as either client or slave 
 		 */
 		socket.on('id', function(data) {
 
@@ -95,15 +60,15 @@ function listenForConnections () {
 			if (data == 'client') {
 				
 				var c = getColor();
-				socket.emit('hs', c);
-				relayClientCommand(socket.id, {cmd:'hs', color:c});	
+				socket.emit(HAND_SHAKE, c);
+				relayClientCommand(socket.id, {cmd:HAND_SHAKE, color:c});	
 				
 				numClients++;
 			}			
 		});
 
 		/*
-		 * Inform slave when a client disconnects
+		 * A socket has disconnected
 		 */
 		socket.on('disconnect', function() {
 
@@ -115,13 +80,15 @@ function listenForConnections () {
 			else {
 
 				numClients--;
-				relayClientCommand(socket.id, {cmd:'disconnect'});	
+				relayClientCommand(socket.id, {cmd:DISCONNECT});	
 			}
 		});
 
 	});
 
-
+	/*
+	 * Relay client commands to the slave
+	 */
 	var relayClientCommand = function (id, cmd) {
 
 		if (slave != undefined)
@@ -135,35 +102,4 @@ function listenForConnections () {
 
 		return colors[numClients];
 	}
-}
-
-
-/*
- * Automatically watch client and server files for changes
- */
-function watchFiles () {
-
-	var watchr = require('watchr');
-	watchr.watch({
-
-		paths: ['./' + CLIENT_HTML, './' + SLAVE_HTML],
-		listeners: {
-
-			change: function (type, path, stat1, stat2) {
-				
-				var subpath = path.substr(path.indexOf('\\') + 1);
-
-				/*
-				 * Remove the public version of the file that's changed and
-				 * replace it with the updated version.
-				 */
-				fs.remove(PUBLIC_HTML + '\\' + subpath);
-				fs.copy(path, PUBLIC_HTML + '\\' + subpath, function (error) { if (error) return console.error(error); 
-
-					console.log('Updated ' + path);
-				});
-			}
-		}
-	});	
-
 }
