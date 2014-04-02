@@ -5,7 +5,6 @@ var Instrument = Class.extend({
 
 	init: function (parent, color) {
 
-		this.parent = parent;
 		this.color = color;
 		this.synth = Synth.createInstrument('piano');
 		this.notes = [new Note('A', 2, 0.2), new Note('C', 2, 0.2), new Note('D', 2, 0.2)];
@@ -16,7 +15,7 @@ var Instrument = Class.extend({
 
 		this.element = document.createElement('div');
 		this.element.className = 'instrument';
-		this.parent.appendChild(this.element);
+		parent.appendChild(this.element);
 	},
 
 	setColor: function (color) {
@@ -68,7 +67,7 @@ var Instrument = Class.extend({
 
 	destroy: function () {
 
-		this.parent.removeChild(this.element);
+		this.element.parent.removeChild(this.element);
 		this.element = null;
 		this.synth = null;
 	},

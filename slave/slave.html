@@ -5,22 +5,22 @@
 	<script src="js/raf.js"></script>
 	<script src="js/Class.js"></script>
 	<script src="js/Instrument.js"></script>
-	<script src="js/Controller.js"></script>
+	<script src="js/ClientController.js"></script>
+	<script src="js/Renderer.js"></script>
 	<script>
 
 	var output = null;
 	var socket = null;
 	var colors = [];
 	var timer;
-	var active = 0;
-
-	var controller = new Controller();
-
 	var minX = 0;
 	var maxX = 0;
 	var minY = 0;
-	var maxY = 0;		
+	var maxY = 0;
 
+	var controller = new ClientController();
+	var renderer = new Renderer(controller.clients);
+	var renderInterval = -1;
 
 	function onload()
 	{     
@@ -50,19 +50,24 @@
 
 				case "down":
 
-					if (active < 1)
+					if (!controller.hasActiveClients())
+					{
+						renderer.start();
 						timer = setInterval(stepAudio, 80);
+					}
 
-					active++;
-					controller.execute(id, Controller.START);
+					controller.execute(id, ClientController.START);
 					break;
 
 				case "up":
-					active--;
-					if (active < 1)
+
+					controller.execute(id, ClientController.STOP);
+
+					if (!controller.hasActiveClients())
+					{
+						renderer.stop();
 						clearInterval(timer);
-					
-					controller.execute(id, Controller.STOP);
+					}					
 					break;					
 
 				case "disconnect":
@@ -71,28 +76,8 @@
 			}
 		});
 
-		animate();
+		
 	}    	
-
-	function draw() {
-
-		var c = null;
-		for (var i in controller.clients) {
-
-			c = controller.clients[i];
-			if (c.active)
-			{
-				c.step();
-
-				if (c.x <= minX || c.x >= maxX)
-					c.bounce(-1, 1);
-				if (c.y <= minY || c.y >= maxY)
-					c.bounce(1, -1);
-
-				c.element.style.margin = c.y + 'px 0 0 ' + c.x  + 'px';
-			}
-		}
-	}
 
 	function stepAudio () {
 
@@ -105,11 +90,6 @@
 		}
 	}
 
-	function animate() {
-
-	    requestAnimationFrame( animate );
-	    draw();
-	}
 
 	function setBounds(event) {
 

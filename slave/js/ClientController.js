@@ -1,12 +1,22 @@
 
-var Controller = Class.extend({
+var ClientController = Class.extend({
 	
 
 	init: function () {
 
 		this.numClients = 0;
+		this.numActive = 0;
 		this.clients = [];
 	},
+
+	/**
+	 * 
+	 */
+	hasActiveClients: function () {
+
+		return this.numActive > 0;
+	},
+
 
 	/**
 	 * Create a new client Instrument and associate it with
@@ -38,11 +48,13 @@ var Controller = Class.extend({
 
 		switch(command) 
 		{
-			case Controller.START:
+			case ClientController.START:
+				this.numActive++;
 				client.start();
 				break;
 
-			case Controller.STOP:
+			case ClientController.STOP:
+				this.numActive--;
 				client.stop();
 				break;
 		}
@@ -66,5 +78,5 @@ var Controller = Class.extend({
 
 });
 
-Controller.START = 'as:start';
-Controller.STOP = 'as:stop';
+ClientController.START = 'as:start';
+ClientController.STOP = 'as:stop';
