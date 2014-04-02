@@ -6,21 +6,21 @@
 	<script src="js/Class.js"></script>
 	<script src="js/Instrument.js"></script>
 	<script src="js/ClientController.js"></script>
+	<script src="js/AudioController.js"></script>
 	<script src="js/Renderer.js"></script>
 	<script>
 
 	var output = null;
 	var socket = null;
 	var colors = [];
-	var timer;
 	var minX = 0;
 	var maxX = 0;
 	var minY = 0;
 	var maxY = 0;
 
-	var controller = new ClientController();
-	var renderer = new Renderer(controller.clients);
-	var renderInterval = -1;
+	var clients = new ClientController();
+	var audio = new AudioController(clients.clients);
+	var renderer = new Renderer(clients.clients);
 
 	function onload()
 	{     
@@ -44,52 +44,38 @@
 
 				case "hs":
 					
-					instrument = controller.addClient(output, id, data.color);
+					instrument = clients.add(output, id, data.color);
 					colors[id] = data.color;
 					break;
 
 				case "down":
 
-					if (!controller.hasActiveClients())
+					if (!clients.hasActiveClients())
 					{
 						renderer.start();
-						timer = setInterval(stepAudio, 80);
+						audio.start();
 					}
 
-					controller.execute(id, ClientController.START);
+					clients.execute(id, ClientController.START);
 					break;
 
 				case "up":
 
-					controller.execute(id, ClientController.STOP);
+					clients.execute(id, ClientController.STOP);
 
-					if (!controller.hasActiveClients())
+					if (!clients.hasActiveClients())
 					{
 						renderer.stop();
-						clearInterval(timer);
+						audio.stop();
 					}					
 					break;					
 
 				case "disconnect":
-					controller.destroyClient(id);
+					clients.destroy(id);
 					break;
 			}
 		});
-
-		
 	}    	
-
-	function stepAudio () {
-
-		var c = null;
-		for (var i in controller.clients) {
-
-			c = controller.clients[i];
-			if (c.active)
-				c.playNextNote();
-		}
-	}
-
 
 	function setBounds(event) {
 

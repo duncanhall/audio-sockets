@@ -17,12 +17,11 @@ var ClientController = Class.extend({
 		return this.numActive > 0;
 	},
 
-
 	/**
 	 * Create a new client Instrument and associate it with
 	 * its socket ID.
 	 */ 
-	addClient: function (parent, id, color) {
+	add: function (parent, id, color) {
 
 		var client = new Instrument(parent, color);
 		this.clients[id] = client;
@@ -34,7 +33,7 @@ var ClientController = Class.extend({
 	/**
 	 * Get a client by its socket ID
 	 */
-	getClientById: function (id) {
+	get: function (id) {
 
 		return this.clients[id];
 	},
@@ -44,7 +43,7 @@ var ClientController = Class.extend({
 	 */
 	execute: function (clientId, command) {
 
-		var client = this.getClientById(clientId);
+		var client = this.get(clientId);
 
 		switch(command) 
 		{
@@ -63,9 +62,9 @@ var ClientController = Class.extend({
 	/**
 	 * Destroy a specific client 
 	 */
-	destroyClient: function (id) {
+	destroy: function (id) {
 
-		var client = this.getClientById(id);
+		var client = this.get(id);
 
 		if (client != null)
 		{
