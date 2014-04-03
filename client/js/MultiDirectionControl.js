@@ -12,7 +12,7 @@ var MultiDirectionControl = Class.extend({
     this.getOrigin();
     this.addTouchListeners();
 
-    this.axisSpace = Math.floor(this.element.offsetWidth / 10);
+    this.axisSpace = Math.floor(this.element.offsetWidth / 6);
     this.tx = 0;
     this.ty = 0;
     this.color = '';
@@ -158,13 +158,15 @@ var MultiDirectionControl = Class.extend({
     var dy = this.origin.y - pageY;
     var dz = Math.sqrt((dx * dx) + (dy * dy));
 
+    //Clamp touch to radius
     var r = (this.origin.radius / dz);
     r = r > 1 ? 1 : r;
+    var rx = (r * pageX + (1 - r) * this.origin.x);
+    var ry = (r * pageY + (1 - r) * this.origin.y);
+    var qx = rx - ((this.touch.offsetWidth / 2 ) + 6)
+    var qy = ry - ((this.touch.offsetWidth / 2 ) + 6)
 
-    var rx = (r * pageX + (1 - r) * this.origin.x) - 46;
-    var ry = (r * pageY + (1 - r) * this.origin.y) - 44;
-
-    this.touch.style.margin = ry + 'px 0 0 ' + rx  + 'px';  
+    this.touch.style.margin = qy + 'px 0 0 ' + qx  + 'px';  
     this.setControlValues(rx, ry, dx, dy);
   },
 
@@ -173,24 +175,24 @@ var MultiDirectionControl = Class.extend({
    */
   setControlValues: function (rx, ry, dx, dy) {
 
-    if (this.onTouchMove != null)
-    {
-      var zx = Math.abs(Math.abs(rx) - Math.abs(this.tx));
-      var zy = Math.abs(Math.abs(ry) - Math.abs(this.ty));
+      var zx = Math.abs(rx) - Math.abs(this.tx);
+      var zy = Math.abs(ry) - Math.abs(this.ty);
 
-      if (zx > this.axisSpace)
+      if (Math.abs(zx) > this.axisSpace)
       {
         this.tx = rx;
-        this.onTouchMove(dx, dy);
+        //this.onTouchMove(dx, dy);
+       // console.log(zx, zy);
       }
 
-      if (zy > this.axisSpace)
+      if (Math.abs(zy) > this.axisSpace)
       {
         this.ty = ry;
-        this.onTouchMove(dx, dy);
+        //this.onTouchMove(dx, dy);
+      //  console.log(zx, zy);
       }
-    }
   }
+
 
 });
 
