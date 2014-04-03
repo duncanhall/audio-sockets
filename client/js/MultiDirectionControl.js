@@ -11,8 +11,9 @@ var MultiDirectionControl = Class.extend({
     this.createTouchPointer();
     this.getOrigin();
     this.addTouchListeners();
+    this.axisSpace = this.element.offsetWidth / 5;
+    this.controlPoint = {x:0, y:0};
 
-    this.axisSpace = Math.floor(this.element.offsetWidth / 6);
     this.tx = 0;
     this.ty = 0;
     this.color = '';
@@ -33,14 +34,13 @@ var MultiDirectionControl = Class.extend({
         this.onTouchEnd = listener;
         break;
 
-      case MultiDirectionControl.TOUCH_MOVE:
-        this.onTouchMove = listener;
+      case MultiDirectionControl.CHANGE:
+        this.onChange = listener;
         break;
 
       default:
         console.warn('Unknown event type.');
         break;
-
     }
 
   },
@@ -138,7 +138,6 @@ var MultiDirectionControl = Class.extend({
     if (this.touchSupported) {
 
       document.body.ontouchmove = null;
-
     } else {
 
       document.body.onmousemove = null;
@@ -163,40 +162,44 @@ var MultiDirectionControl = Class.extend({
     r = r > 1 ? 1 : r;
     var rx = (r * pageX + (1 - r) * this.origin.x);
     var ry = (r * pageY + (1 - r) * this.origin.y);
-    var qx = rx - ((this.touch.offsetWidth / 2 ) + 6)
-    var qy = ry - ((this.touch.offsetWidth / 2 ) + 6)
 
+    //Position touch pointer
+    var margin = (this.touch.offsetWidth / 2 ) + 6;
+    var qx = rx - margin
+    var qy = ry - margin
     this.touch.style.margin = qy + 'px 0 0 ' + qx  + 'px';  
-    this.setControlValues(rx, ry, dx, dy);
+
+    this.setControlValues(
+      ((this.origin.x - qx) - margin) * -1,
+      ((this.origin.y - qy) - margin) * -1
+    );
+
   },
 
   /**
    * Check for change in control point
    */
-  setControlValues: function (rx, ry, dx, dy) {
+  setControlValues: function (rx, ry) {
 
-      var zx = Math.abs(rx) - Math.abs(this.tx);
-      var zy = Math.abs(ry) - Math.abs(this.ty);
+      rx = rx + (this.element.offsetWidth / 2);
+      ry = ry + (this.element.offsetWidth / 2);
 
-      if (Math.abs(zx) > this.axisSpace)
+      var gx = Math.floor(rx / this.axisSpace) - 2;
+      var gy = Math.floor(ry / this.axisSpace) - 2;
+
+      if (gx != this.controlPoint.x || gy != this.controlPoint.y)
       {
-        this.tx = rx;
-        //this.onTouchMove(dx, dy);
-       // console.log(zx, zy);
-      }
+        this.controlPoint.x = gx;
+        this.controlPoint.y = gy;
 
-      if (Math.abs(zy) > this.axisSpace)
-      {
-        this.ty = ry;
-        //this.onTouchMove(dx, dy);
-      //  console.log(zx, zy);
+        if (this.onChange != null)
+          this.onChange(gx, gy);
       }
   }
-
 
 });
 
 
 MultiDirectionControl.TOUCH_START = 'mdc:touchStart';
 MultiDirectionControl.TOUCH_END = 'mdc:touchEnd';
-MultiDirectionControl.TOUCH_MOVE = 'mdc:touchMove';
+MultiDirectionControl.CHANGE = 'mdc:change';

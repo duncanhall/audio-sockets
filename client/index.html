@@ -15,33 +15,31 @@
         var CMD_DOWN = ClientCommand.START;
         var touchPad = null;
 
-
         function onload()
     	{			
+            touchPad = document.getElementById('touchPad');
+            control = new MultiDirectionControl(touchPad);
+
             socket = io.connect(SERVER);
             socket.on("connect", function() { 
-
                 socket.emit("id", "client");
              });
 
             socket.on(ClientCommand.HAND_SHAKE, function(color) { 
-                
                 control.setColor(color);
             });
-
-            touchPad = document.getElementById('touchPad');
-            control = new MultiDirectionControl(touchPad);
             
             control.addEventListener(MultiDirectionControl.TOUCH_START, function() { 
-
                 send({cmd:CMD_DOWN}); 
             });
 
             control.addEventListener(MultiDirectionControl.TOUCH_END, function() { 
-
                 send({cmd:CMD_UP});
             })    
              
+            control.addEventListener(MultiDirectionControl.CHANGE, function(cx, cy) { 
+                console.log(cx, cy);
+            })              
         }			
 
     	function send(data)
