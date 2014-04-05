@@ -7,7 +7,9 @@ var Instrument = Class.extend({
 
 		this.color = color;
 		this.synth = Synth.createInstrument('piano');
-		this.notes = [new Note('A', 2, 0.2), new Note('C', 2, 0.2), new Note('D', 2, 0.2)];
+		this.notes = ['A', 'C', 'D'];
+		this.octave = 3;
+		this.duration = 0.2;
 		this.n = 0;
 		this.fx = 0;
 		this.fy = 0;
@@ -29,7 +31,7 @@ var Instrument = Class.extend({
 
 	playNextNote: function () {
 
-		this.synth.play.apply(this.synth, this.notes[this.n++].toArgs());
+		this.synth.play(this.notes[this.n++], this.octave, this.duration);
 		this.n = this.n > 2 ? 0 : this.n;
 	},
 

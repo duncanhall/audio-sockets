@@ -13,6 +13,7 @@
         var CMD_ID = 'cmd-client';
         var CMD_UP = ClientCommand.STOP;
         var CMD_DOWN = ClientCommand.START;
+        var CMD_CHANGE = ClientCommand.CHANGE;
         var touchPad = null;
 
         function onload()
@@ -21,9 +22,10 @@
             control = new MultiDirectionControl(touchPad);
 
             socket = io.connect(SERVER);
+
             socket.on("connect", function() { 
                 socket.emit("id", "client");
-             });
+            });
 
             socket.on(ClientCommand.HAND_SHAKE, function(color) { 
                 control.setColor(color);
@@ -38,7 +40,7 @@
             })    
              
             control.addEventListener(MultiDirectionControl.CHANGE, function(cx, cy) { 
-                console.log(cx, cy);
+                send({cmd:CMD_CHANGE, x:cx, y:cy});
             })              
         }			
 

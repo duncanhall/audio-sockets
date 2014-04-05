@@ -41,7 +41,7 @@ var ClientController = Class.extend({
 	/**
 	 * Execute a command on a specific client
 	 */
-	execute: function (clientId, command) {
+	execute: function (clientId, command, data) {
 
 		var client = this.get(clientId);
 
@@ -56,6 +56,10 @@ var ClientController = Class.extend({
 				this.numActive--;
 				client.stop();
 				break;
+
+			case ClientController.CHANGE:
+				client.octave = (data.y - 3) * -1;
+				break;				
 		}
 	},
 
@@ -79,3 +83,4 @@ var ClientController = Class.extend({
 
 ClientController.START = 'as:start';
 ClientController.STOP = 'as:stop';
+ClientController.CHANGE = 'as:change';
