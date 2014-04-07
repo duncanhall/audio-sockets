@@ -58,7 +58,8 @@ var ClientController = Class.extend({
 				break;
 
 			case ClientController.CHANGE:
-				client.octave = (data.y - 3) * -1;
+				client.octave = ((data.y - 3) * -1);
+				client.setSpeed([40, 80, 120, 160, 200][data.x + 2]);
 				break;				
 		}
 	},

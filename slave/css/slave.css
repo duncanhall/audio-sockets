@@ -20,13 +20,19 @@ body, html {
   box-shadow: 0 0 30px white;
   -webkit-box-shadow: 0 0 30px white;
   -moz-box-shadow: 0 0 30px white;
-  transform: scale(0, 0);
-  -ms-transform: scale(0, 0);
-  -webkit-transform: scale(0, 0);
-  transition: all 0.4s;
-  -webkit-transition: all 0.4s; }
+  transform: scale(0);
+  -webkit-transform: scale(0); }
 
-.grow {
-  transform: scale(1, 1);
-  -ms-transform: scale(1, 1);
-  -webkit-transform: scale(1, 1); }
+@keyframes pulse {
+  from {
+    transform: scale(1); }
+
+  to {
+    transform: scale(0); } }
+
+@-webkit-keyframes pulse {
+  from {
+    -webkit-transform: scale(1); }
+
+  to {
+    -webkit-transform: scale(0); } }

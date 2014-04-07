@@ -24,7 +24,8 @@ var AudioController = Class.extend({
 	 */
 	start: function () {
 
-		this.runTimer(80);
+		this.stop();
+		this.runTimer(AudioController.MIN_STEP);
 	},
 
 	/**
@@ -58,6 +59,7 @@ var AudioController = Class.extend({
 		var start = this.performance.now();
 		var time = 0;
 		var scope = this;
+		var elapsed = '0.0';
 
 		function instance()  
 		{  
@@ -71,3 +73,5 @@ var AudioController = Class.extend({
 	}
 
 });
+
+AudioController.MIN_STEP = 40;
