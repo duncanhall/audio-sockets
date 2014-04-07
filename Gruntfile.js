@@ -21,14 +21,10 @@ module.exports = function(grunt) {
     },
     jshint: {
       files: ['slave/js/*.js'],
-      ignores: ['slave/js/slave.min.js'],
       options: {
-        // options here to override JSHint defaults
         globals: {
-          jQuery: true,
           console: true,
-          module: true,
-          document: true
+          browser: true
         }
       }
     }    
