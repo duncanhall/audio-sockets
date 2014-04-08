@@ -8,6 +8,7 @@ var IGNORE_COMPILED = '!**/*' + COMPILED_EXT;
 var AUDIO_SRC = 'slave/audiosynth/audiosynth.js';
 var SLAVE_NAME = 'slave';
 var CLIENT_NAME = 'client';
+var CMN_NAME = 'common';
 
 
 /**
@@ -22,21 +23,23 @@ module.exports = function(grunt) {
 	//Create filesets for jshint
 	var slaveHinter = createSrcHinter(SLAVE_NAME);
 	var clientHinter = createSrcHinter(CLIENT_NAME);
+	var commonHinter = createSrcHinter(CMN_NAME);
 
 	grunt.initConfig({
 
 		uglify: {
-			options: {mangle: true},      
-			slave: {files: slaveCompiler},
-			client: {files: clientCompiler}
+			options: {mangle:true},      
+			slave: {files:slaveCompiler},
+			client: {files:clientCompiler}
 		},
 
 		jshint: {
 			slave: slaveHinter,
 			client: clientHinter,
+			common: commonHinter,
 			options: { 
 				eqnull:true,
-				globals: {console: true, browser: true}
+				globals: {console:true, browser:true}
 			}
 		}    
 	});
@@ -75,5 +78,5 @@ var createSrcCompiler = function (name, files) {
  */
 var createSrcHinter = function (name) {
 
-	return [name + '/js/*.js', IGNORE_COMPILED];
+	return [name + '/js/*.js', IGNORE_COMPILED, '!**/Class.js'];
 }
