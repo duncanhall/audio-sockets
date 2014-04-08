@@ -1,59 +1,79 @@
+
+/**
+ * Common src paths and matchers
+ */ 
+var COMMON_SRC = 'common/js/*.js';
+var COMPILED_EXT = '.min.js';
+var IGNORE_COMPILED = '!**/*' + COMPILED_EXT;
+var AUDIO_SRC = 'slave/audiosynth/audiosynth.js';
+var SLAVE_NAME = 'slave';
+var CLIENT_NAME = 'client';
+
+
+/**
+ * Grunt config and task setup
+ */
 module.exports = function(grunt) {
 
-  /**
-   * Common src paths and matchers
-   */ 
-  var COMMON_SRC = 'common/js/*.js';
-  var COMPILED_EXT = '.min.js';
-  var IGNORE_COMPILED = '!**/*' + COMPILED_EXT;
-  var AUDIO_SRC = 'slave/audiosynth/audiosynth.js';
+	//Create filesets for uglify compiler
+	var slaveCompiler = createSrcCompiler(SLAVE_NAME, [AUDIO_SRC]);
+	var clientCompiler = createSrcCompiler(CLIENT_NAME);
 
-  /**
-   * Compiled slave settings
-   */
-  var slaveDir = 'slave/js/';
-  var slaveSrc = slaveDir + '*.js';
-  var slaveCompiled = slaveDir + 'slave' + COMPILED_EXT;
-  var slaveCompiler = {};
+	//Create filesets for jshint
+	var slaveHinter = createSrcHinter(SLAVE_NAME);
+	var clientHinter = createSrcHinter(CLIENT_NAME);
 
-  slaveCompiler[slaveCompiled] = [
-      COMMON_SRC,
-      AUDIO_SRC,
-      slaveSrc,
-      IGNORE_COMPILED
-  ];
+	grunt.initConfig({
 
-  var clientDir = 'client/js/';
-  var clientSrc = clientDir + '*.js';
-  var clientCompiled = clientDir + 'client' + COMPILED_EXT;
-  var clientCompiler = {};
+		uglify: {
+			options: {mangle: true},      
+			slave: {files: slaveCompiler},
+			client: {files: clientCompiler}
+		},
 
-  clientCompiler[clientCompiled] = [
-      COMMON_SRC,
-      'client/js/MultiDirectionControl.js',
-      IGNORE_COMPILED
-  ];
+		jshint: {
+			slave: slaveHinter,
+			client: clientHinter,
+			options: { 
+				eqnull:true,
+				globals: {console: true, browser: true}
+			}
+		}    
+	});
 
-  grunt.initConfig({
-    uglify: {
-      options: {
-        mangle: true
-      },      
-      slave: { files: slaveCompiler },
-      client: { files: clientCompiler }
-    },
-    jshint: {
-      files: [slaveSrc],
-      options: {
-        globals: {
-          console: true,
-          browser: true
-        }
-      }
-    }    
-  });
-
-  grunt.loadNpmTasks('grunt-contrib-uglify');
-  grunt.loadNpmTasks('grunt-contrib-jshint');
-
+	grunt.loadNpmTasks('grunt-contrib-uglify');
+	grunt.loadNpmTasks('grunt-contrib-jshint');
+	grunt.registerTask('default', ['jshint', 'uglify']);
 };
+
+
+/**
+ * Returns a set of files to compile, associated to their target file
+ */
+var createSrcCompiler = function (name, files) {
+
+	var srcDir = name + '/js/';
+	var srcFiles = srcDir + '*.js';
+	var compiled = srcDir + name + COMPILED_EXT;
+	var compiler = {};
+	var input = [
+		COMMON_SRC,
+		srcFiles,
+		IGNORE_COMPILED
+	];
+
+	if (files != null)
+		input = input.concat(files);
+
+	compiler[compiled] = input;
+	return compiler;
+}
+
+
+/**
+ * Returns a fileset of all .js files except compiled files
+ */
+var createSrcHinter = function (name) {
+
+	return [name + '/js/*.js', IGNORE_COMPILED];
+}

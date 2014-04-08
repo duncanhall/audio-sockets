@@ -71,7 +71,7 @@ var ClientController = Class.extend({
 
 		var client = this.get(id);
 
-		if (client !== null)
+		if (client != null)
 		{
 			client.destroy();
 			this.numClients--;

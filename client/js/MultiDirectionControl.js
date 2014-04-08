@@ -165,8 +165,8 @@ var MultiDirectionControl = Class.extend({
 
     //Position touch pointer
     var margin = (this.touch.offsetWidth / 2 ) + 6;
-    var qx = rx - margin
-    var qy = ry - margin
+    var qx = rx - margin;
+    var qy = ry - margin;
     this.touch.style.margin = qy + 'px 0 0 ' + qx  + 'px';  
 
     this.setControlValues(

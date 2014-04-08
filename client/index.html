@@ -26,7 +26,7 @@
             socket.on(ClientCommand.HAND_SHAKE, function(color) { 
                 control.setColor(color);
             });
-            
+
             control.addEventListener(MultiDirectionControl.TOUCH_START, function() { 
                 send({cmd:CMD_DOWN}); 
             });
@@ -34,10 +34,10 @@
             control.addEventListener(MultiDirectionControl.TOUCH_END, function() { 
                 send({cmd:CMD_UP});
             })    
-             
+   
             control.addEventListener(MultiDirectionControl.CHANGE, function(cx, cy) { 
                 send({cmd:CMD_CHANGE, x:cx, y:cy});
-            })              
+            })      
         }			
 
     	function send(data)
