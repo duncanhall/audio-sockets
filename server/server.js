@@ -1,9 +1,6 @@
 
 
-var CLIENT_HTML = '/../client';
-var SLAVE_HTML = '/../slave';
-var COMMON_HTML = '/../common';
-
+var PUBLIC_HTML = '/../public_html/';
 var CMD_CLIENT = 'cmd-client';
 var HAND_SHAKE = 'as-cc:hs';
 var DISCONNECT = 'as-cc:dc';
@@ -27,9 +24,7 @@ function listenForConnections () {
 	server = require('http').createServer(app);
 	io = require('socket.io').listen(server);
 
-	app.use("/", express.static(__dirname + CLIENT_HTML));
-	app.use("/common", express.static(__dirname + COMMON_HTML));
-	app.use("/slave", express.static(__dirname + SLAVE_HTML));
+	app.use("/", express.static(__dirname + PUBLIC_HTML));
 
 	server.listen(8000);
 
