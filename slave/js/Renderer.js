@@ -18,14 +18,14 @@ var Renderer = Class.extend({
 		for (var i in items) {
 
 			child = items[i];
-			if (child.active)
-			{
+			if (child.active) {
+
 				child.step();
 
 				if (child.x <= minX || child.x >= maxX)
-					child.bounce(-1, 1);
+				child.bounce(-1, 1);
 				if (child.y <= minY || child.y >= maxY)
-					child.bounce(1, -1);
+				child.bounce(1, -1);
 
 				child.element.style.margin = child.y + 'px 0 0 ' + child.x  + 'px';
 			}
@@ -38,8 +38,8 @@ var Renderer = Class.extend({
 	start: function () {
 
 		var renderer = this;
-	    this.renderInterval = requestAnimationFrame(function () {
-	    	renderer.start();
+		this.renderInterval = requestAnimationFrame(function () {
+			renderer.start();
 		});
 
 		this.draw();
@@ -50,7 +50,7 @@ var Renderer = Class.extend({
 	 */
 	stop: function () {
 
-	    cancelAnimationFrame(this.renderInterval);
+		cancelAnimationFrame(this.renderInterval);
 	}
 
 });

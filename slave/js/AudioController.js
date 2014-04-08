@@ -63,10 +63,10 @@ var AudioController = Class.extend({
 
 		function instance()  
 		{  
-		    time += tick;  
-		    scope.step();
-		    var diff = (scope.performance.now() - start) - time;  
-		    scope.stepInterval = window.setTimeout(instance, (tick - diff));  
+			time += tick;  
+			scope.step();
+			var diff = (scope.performance.now() - start) - time;  
+			scope.stepInterval = window.setTimeout(instance, (tick - diff));  
 		}  
 
 		this.stepInterval = window.setTimeout(instance, tick);
