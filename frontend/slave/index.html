@@ -1,0 +1,105 @@
+<html>
+	<head>
+	<script src="/socket.io/socket.io.js"></script>
+	<script>
+
+	var socket = null;
+    var ClientCommand = {};
+
+    ClientCommand.HAND_SHAKE = 'as-cc:hs';
+    ClientCommand.START = 'as-cc:start';
+    ClientCommand.STOP = 'as-cc:stop';
+    ClientCommand.CHANGE = 'as-cc:chng';
+    ClientCommand.DISCONNECT = 'as-cc:dc';
+
+	function onload()
+	{
+		socket = io.connect('http://22.155.0.6:8000');
+
+		socket.on("connect", function() {
+			socket.emit("id", "slave");
+		});
+
+		socket.on("cmd-client", function(data) {
+
+			var id = data.id;
+			var cmd = data.cmd;
+
+			switch(cmd)
+			{
+
+				case ClientCommand.HAND_SHAKE:
+
+					break;
+
+				case ClientCommand.START:
+
+					break;
+
+				case ClientCommand.STOP:
+
+					break;					
+
+				case ClientCommand.CHANGE:
+                    x1 = data.x * window.innerWidth;
+                    y1 = data.y * window.innerHeight;
+					break;
+
+				case ClientCommand.DISCONNECT:
+
+					break;
+			}
+		});
+
+        var width = window.innerWidth;
+        var height = window.innerHeight;
+        var x1 = width / 2;
+        var y1 = height / 2;
+        var x0 = x1;
+        var y0 = y1;
+        var i = 0;
+        var r = 140;
+        var τ = 2 * Math.PI;
+
+        var canvas = d3.select("body").append("canvas").attr("width", width).attr("height", height);
+        var context = canvas.node().getContext("2d");
+        context.globalCompositeOperation = "lighter";
+        context.lineWidth = 0.3;
+
+        d3.timer(function() {
+            context.clearRect(0, 0, width, height);
+
+            var z = d3.hsl(++i % 360, 1, 0.5).rgb();
+            var c = "rgba(" + z.r + "," + z.g + "," + z.b + ",";
+            var x = x0 += (x1 - x0) * 0.01;
+            var y = y0 += (y1 - y0) * 0.01;
+
+            d3.select({}).transition()
+                .duration(3000)
+                .ease(Math.sqrt)
+                .tween("circle", function() {
+                    return function(t) {
+                        var q = 0.5;
+                        var a = t < q ? q - (q - t) : 1 - t;
+                        context.strokeStyle = c + a + ")";
+                        context.beginPath();
+                        context.arc(x, y, r * t, 0, τ);
+                        context.stroke();
+                    };
+                });
+        });
+
+	}
+
+	</script>
+	<style>
+        body, html {
+            background-color: #111111;
+            padding: 10px;
+        }
+	</style>
+	</head>
+	<body onload="onload();">
+        <script src="http://d3js.org/d3.v3.min.js"></script>
+	</body>
+</html>

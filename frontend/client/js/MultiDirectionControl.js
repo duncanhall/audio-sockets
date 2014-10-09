@@ -11,7 +11,7 @@ var MultiDirectionControl = Class.extend({
 		this.createTouchPointer();
 		this.getOrigin();
 		this.addTouchListeners();
-		this.axisSpace = this.element.offsetWidth / 5;
+		this.axisSpace = this.element.offsetWidth / 100;
 		this.controlPoint = {x:0, y:0};
 
 		this.tx = 0;
@@ -182,16 +182,16 @@ var MultiDirectionControl = Class.extend({
 		rx = rx + (this.element.offsetWidth / 2);
 		ry = ry + (this.element.offsetWidth / 2);
 
-		var gx = Math.floor(rx / this.axisSpace) - 2;
-		var gy = Math.floor(ry / this.axisSpace) - 2;
+		var gx = Math.floor(rx / this.axisSpace);
+		var gy = Math.floor(ry / this.axisSpace);
 
-		if (gx != this.controlPoint.x || gy != this.controlPoint.y)
+		if (gx !== this.controlPoint.x || gy !== this.controlPoint.y)
 		{
 			this.controlPoint.x = gx;
 			this.controlPoint.y = gy;
 
-			if (this.onChange != null)
-				this.onChange(gx, gy);
+			if (this.onChange !== null)
+				this.onChange(gx / 100, gy / 100);
 		}
 	}
 

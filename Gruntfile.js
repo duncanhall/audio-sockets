@@ -5,11 +5,10 @@
 var COMMON_SRC = 'common/js/*.js';
 var COMPILED_EXT = '.min.js';
 var IGNORE_COMPILED = '!**/*' + COMPILED_EXT;
-var AUDIO_SRC = 'slave/audiosynth/audiosynth.js';
 var SLAVE_NAME = 'slave';
 var CLIENT_NAME = 'client';
 var CMN_NAME = 'common';
-var BUILD_DIR = 'public_html';
+var BUILD_DIR = 'build';
 
 
 /**
@@ -76,7 +75,7 @@ module.exports = function(grunt) {
 
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-jshint');
-	grunt.registerTask('default', ['jshint', 'clean', 'uglify']);
+	grunt.registerTask('build', ['jshint', 'clean', 'uglify']);
 };
 
 
@@ -100,7 +99,7 @@ var createSrcCompiler = function (name, files) {
 
 	compiler[compiled] = input;
 	return compiler;
-}
+};
 
 
 /**

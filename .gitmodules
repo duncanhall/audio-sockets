@@ -1,3 +1,0 @@
-[submodule "slave/audiosynth"]
-	path = slave/audiosynth
-	url = git://github.com/keithwhor/audiosynth.git

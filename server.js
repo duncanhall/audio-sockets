@@ -1,6 +1,6 @@
 
 
-var PUBLIC_HTML = '/../public_html/';
+var PUBLIC_HTML = '/frontend/';
 var CMD_CLIENT = 'cmd-client';
 var HAND_SHAKE = 'as-cc:hs';
 var DISCONNECT = 'as-cc:dc';
@@ -91,7 +91,7 @@ function listenForConnections () {
 			cmd.id = String(id);
 			slave.emit(CMD_CLIENT, cmd);
 		}
-	}
+	};
 
 	var getColor = function () {
 
