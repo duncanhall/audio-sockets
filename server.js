@@ -1,100 +1,26 @@
 
+var path = require('path');
 
-var PUBLIC_HTML = '/frontend/';
-var CMD_CLIENT = 'cmd-client';
-var HAND_SHAKE = 'as-cc:hs';
-var DISCONNECT = 'as-cc:dc';
+require('dns').lookup(require('os').hostname(), function (err, add, fam) {
 
-var express;
-var app;
-var server;
-var io;
-var slaveID = 0;
-var slave;
-var colors = ['FFFFFF', '6AF0E1', 'FFCC00'];
-var numClients = 0;
+    if (err !== null || add === null) {
+        console.error('Could not detect IP: ' + err);
+    }
+    else {
+        var SERVER_ADDRESS = add;
 
-listenForConnections();
+        var express = require('express');
+        var app = express();
+        var server = require('http').createServer(app);
+        var io = require('socket.io').listen(server);
+        var relay = require(path.resolve('backend/io/SocketRelay'));
+
+        app.use("/", express.static(__dirname + '/frontend/'));
+        server.listen(8000);
+        relay.init(io);
+    }
+});
 
 
-function listenForConnections () {
 
-	express = require('express');
-	app = express();
-	server = require('http').createServer(app);
-	io = require('socket.io').listen(server);
 
-	app.use("/", express.static(__dirname + PUBLIC_HTML));
-
-	server.listen(8000);
-
-	/*
-	 * Define listeners for each socket that connects
-	 */
-	io.sockets.on('connection', function (socket) {
-
-		/*
-		 * Receive a client command
-		 */
-		socket.on(CMD_CLIENT, function(cmd) {
-
-			relayClientCommand(socket.id, cmd);
-		});
-
-		/*
-		 * Socket is identifying as either client or slave 
-		 */
-		socket.on('id', function(data) {
-
-			if (data == 'slave') {
-				
-				slaveID = socket.id;
-				slave = socket;
-			}
-
-			if (data == 'client') {
-				
-				var c = getColor();
-				socket.emit(HAND_SHAKE, c);
-				relayClientCommand(socket.id, {cmd:HAND_SHAKE, color:c});	
-				
-				numClients++;
-			}			
-		});
-
-		/*
-		 * A socket has disconnected
-		 */
-		socket.on('disconnect', function() {
-
-			if (socket.id == slaveID) {
-
-				slaveID = 0;
-				slave = undefined;
-			}
-			else {
-
-				numClients--;
-				relayClientCommand(socket.id, {cmd:DISCONNECT});	
-			}
-		});
-
-	});
-
-	/*
-	 * Relay client commands to the slave
-	 */
-	var relayClientCommand = function (id, cmd) {
-
-		if (slave != undefined)
-		{	
-			cmd.id = String(id);
-			slave.emit(CMD_CLIENT, cmd);
-		}
-	};
-
-	var getColor = function () {
-
-		return colors[numClients];
-	}
-}

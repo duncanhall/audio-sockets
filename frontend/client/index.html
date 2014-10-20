@@ -30,8 +30,8 @@
                 socket.emit("id", "client");
             });
 
-            socket.on(ClientCommand.HAND_SHAKE, function(color) { 
-                control.setColor(color);
+            socket.on(ClientCommand.HAND_SHAKE, function() {
+                //Connection
             });
 
             control.addEventListener(MultiDirectionControl.TOUCH_START, function() { 
