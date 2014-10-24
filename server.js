@@ -30,7 +30,7 @@ var SampleApp = function() {
             //  allows us to run/test the app locally.
             console.warn('No OPENSHIFT_NODEJS_IP var, using 127.0.0.1');
             self.ipaddress = "127.0.0.1";
-        };
+        }
     };
 
 
@@ -114,6 +114,8 @@ var SampleApp = function() {
     self.initializeServer = function() {
         self.createRoutes();
         self.app = express.createServer();
+
+        self.app.use("/", express.static(__dirname + '/frontend/'));
 
         //  Add handlers for the app (from the routes).
         for (var r in self.routes) {
