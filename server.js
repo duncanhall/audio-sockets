@@ -1,7 +1,8 @@
 #!/bin/env node
 //  OpenShift sample Node application
+var express = require('express');
+var fs      = require('fs');
 
-var path = require('path');
 
 /**
  *  Define the sample application.
@@ -29,8 +30,29 @@ var SampleApp = function() {
             //  allows us to run/test the app locally.
             console.warn('No OPENSHIFT_NODEJS_IP var, using 127.0.0.1');
             self.ipaddress = "127.0.0.1";
-        }
+        };
     };
+
+
+    /**
+     *  Populate the cache.
+     */
+    self.populateCache = function() {
+        if (typeof self.zcache === "undefined") {
+            self.zcache = { 'index.html': '' };
+        }
+
+        //  Local cache for static content.
+        self.zcache['index.html'] = fs.readFileSync('./index.html');
+    };
+
+
+    /**
+     *  Retrieve entry (content) from cache.
+     *  @param {string} key  Key identifying content to retrieve from cache.
+     */
+    self.cache_get = function(key) { return self.zcache[key]; };
+
 
     /**
      *  terminator === the termination handler
@@ -69,7 +91,7 @@ var SampleApp = function() {
 
     /**
      *  Create the routing table entries + handlers for the application.
-     *
+     */
     self.createRoutes = function() {
         self.routes = { };
 
@@ -83,7 +105,21 @@ var SampleApp = function() {
             res.send(self.cache_get('index.html') );
         };
     };
-    */
+
+
+    /**
+     *  Initialize the server (express) and create the routes and register
+     *  the handlers.
+     */
+    self.initializeServer = function() {
+        self.createRoutes();
+        self.app = express.createServer();
+
+        //  Add handlers for the app (from the routes).
+        for (var r in self.routes) {
+            self.app.get(r, self.routes[r]);
+        }
+    };
 
 
     /**
@@ -91,33 +127,24 @@ var SampleApp = function() {
      */
     self.initialize = function() {
         self.setupVariables();
+        self.populateCache();
         self.setupTerminationHandlers();
 
-
-        require('dns').lookup(require('os').hostname(), function (err, add, fam) {
-
-            if (err !== null || add === null) {
-                console.error('Could not detect IP: ' + err);
-            }
-            else {
-                var SERVER_ADDRESS = add;
-
-                var express = require('express');
-                var app = express();
-                var server = require('http').createServer(app);
-                var io = require('socket.io').listen(server);
-                var relay = require(path.resolve('backend/io/SocketRelay'));
-
-                app.use("/", express.static(__dirname + '/frontend/'));
-
-                server.listen(self.port, self.ipaddress, function(){
-                    console.log("Listening on " + self.ipaddress + ", server_port " + self.port);
-                    relay.init(io);
-                });
-            }
-        });
+        // Create the express server and routes.
+        self.initializeServer();
     };
 
+
+    /**
+     *  Start the server (starts up the sample application).
+     */
+    self.start = function() {
+        //  Start the app on the specific interface (and port).
+        self.app.listen(self.port, self.ipaddress, function() {
+            console.log('%s: Node server started on %s:%d ...',
+                Date(Date.now() ), self.ipaddress, self.port);
+        });
+    };
 
 };   /*  Sample Application.  */
 
@@ -128,4 +155,5 @@ var SampleApp = function() {
  */
 var zapp = new SampleApp();
 zapp.initialize();
+zapp.start();
 
