@@ -40,6 +40,7 @@ var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '22.155.0.6';
 
 app.use("/", express.static(__dirname + '/frontend/'));
 
+console.log('App is using: ' + __dirname + '/frontend/');
 
 server.listen(server_port, server_ip_address, function(){
     console.log("Listening on " + server_ip_address + ", server_port " + server_port);
