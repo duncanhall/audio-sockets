@@ -16,7 +16,7 @@ require('dns').lookup(require('os').hostname(), function (err, add, fam) {
         var relay = require(path.resolve('backend/io/SocketRelay'));
 
         var server_port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
-        var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
+        var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || SERVER_ADDRESS;
 
         app.use("/", express.static(__dirname + '/frontend/'));
 

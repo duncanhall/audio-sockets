@@ -14,7 +14,7 @@
 
 	function onload()
 	{
-		socket = io.connect('http://22.155.0.6:8000');
+		socket = io.connect('http://22.155.0.6:8080');
 
 		socket.on("connect", function() {
 			socket.emit("id", "slave");
