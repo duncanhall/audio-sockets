@@ -27,6 +27,21 @@ require('dns').lookup(require('os').hostname(), function (err, add, fam) {
     }
 });
 
+function terminate (sig) {
+    if (typeof sig === "string") {
+        console.log('%s: Received %s - terminating sample app ...',
+            new Date(Date.now()), sig);
+        process.exit(1);
+    }
+    console.log('%s: Node server stopped.', new Date(Date.now()) );
+}
 
+process.on('exit', terminate);
+
+// Removed 'SIGPIPE' from the list - bugz 852598.
+['SIGHUP', 'SIGINT', 'SIGQUIT', 'SIGILL', 'SIGTRAP', 'SIGABRT', 'SIGBUS',
+    'SIGFPE', 'SIGUSR1', 'SIGSEGV', 'SIGUSR2', 'SIGTERM'].forEach(function(element, index, array) {
+    process.on(element, function() { terminate(element); });
+});
 
 
