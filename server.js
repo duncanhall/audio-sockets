@@ -89,6 +89,12 @@ var SampleApp = function() {
     /*  App server functions (main app logic here).                       */
     /*  ================================================================  */
 
+    /**
+     *  Create the routing table entries + handlers for the application.
+     */
+    self.createRoutes = function() {
+        self.routes = { };
+    };
 
 
     /**
@@ -96,11 +102,10 @@ var SampleApp = function() {
      *  the handlers.
      */
     self.initializeServer = function() {
-
+        self.createRoutes();
         self.app = express.createServer();
 
         self.app.use("/", express.static(__dirname + '/frontend/'));
-
     };
 
 
