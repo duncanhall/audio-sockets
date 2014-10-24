@@ -1,7 +1,6 @@
 #!/bin/env node
-//  OpenShift sample Node application
-var express = require('express');
-var fs      = require('fs');
+
+var path = require('path');
 
 
 /**
@@ -75,11 +74,6 @@ var SampleApp = function() {
     self.createRoutes = function() {
         self.routes = { };
 
-        self.routes['/asciimo'] = function(req, res) {
-            var link = "http://i.imgur.com/kmbjB.png";
-            res.send("<html><body><img src='" + link + "'></body></html>");
-        };
-
         self.routes['/'] = function(req, res) {
             res.setHeader('Content-Type', 'text/html');
             res.send(200);
@@ -93,14 +87,42 @@ var SampleApp = function() {
      */
     self.initializeServer = function() {
         self.createRoutes();
-        self.app = express.createServer();
 
-        self.app.use("/", express.static(__dirname + '/frontend/'));
 
-        //  Add handlers for the app (from the routes).
-        for (var r in self.routes) {
-            self.app.get(r, self.routes[r]);
-        }
+
+        require('dns').lookup(require('os').hostname(), function (err, add, fam) {
+
+            if (err !== null || add === null) {
+                console.error('Could not detect IP: ' + err);
+            }
+            else {
+                var SERVER_ADDRESS = add;
+
+                var express = require('express');
+                var app = express();
+                var server = require('http').createServer(app);
+                var io = require('socket.io').listen(server);
+                var relay = require(path.resolve('backend/io/SocketRelay'));
+
+                var server_port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
+                var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || SERVER_ADDRESS;
+
+                app.use("/", express.static(__dirname + '/frontend/'));
+
+                for (var r in self.routes) {
+                    app.get(r, self.routes[r]);
+                }
+
+                server.listen(server_port, server_ip_address, function(){
+                    console.log("Listening on " + server_ip_address + ", server_port " + server_port);
+                    relay.init(io);
+                });
+            }
+        });
+
+
+
+
     };
 
 
@@ -110,22 +132,10 @@ var SampleApp = function() {
     self.initialize = function() {
         self.setupVariables();
         self.setupTerminationHandlers();
-
-        // Create the express server and routes.
         self.initializeServer();
     };
 
 
-    /**
-     *  Start the server (starts up the sample application).
-     */
-    self.start = function() {
-        //  Start the app on the specific interface (and port).
-        self.app.listen(self.port, self.ipaddress, function() {
-            console.log('%s: Node server started on %s:%d ...',
-                Date(Date.now() ), self.ipaddress, self.port);
-        });
-    };
 
 };   /*  Sample Application.  */
 
@@ -136,5 +146,4 @@ var SampleApp = function() {
  */
 var zapp = new SampleApp();
 zapp.initialize();
-zapp.start();
 
