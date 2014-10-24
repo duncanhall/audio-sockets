@@ -1,8 +1,18 @@
 {
-	"name":"node-websockets",
+	"name":"Websockets demo",
 	"description":"node js websockets example",
 	"version":"0.1.0",
+    "author": {
+        "name": "Duncan Hall",
+        "email": "himself@duncanhall.net",
+        "url": "http://duncanhall.net"
+    },
 	"private":true,
+    "main": "server.js",
+    "engines": {
+        "node": ">= 0.10.0",
+        "npm": ">= 1.3.0"
+    },
 	"dependencies": {
 		"express":"3.4.8",
 		"socket.io":"0.9.15"
