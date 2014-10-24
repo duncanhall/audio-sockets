@@ -1,6 +1,7 @@
 
 var path = require('path');
 
+/*
 require('dns').lookup(require('os').hostname(), function (err, add, fam) {
 
     if (err !== null || add === null) {
@@ -15,7 +16,7 @@ require('dns').lookup(require('os').hostname(), function (err, add, fam) {
         var io = require('socket.io').listen(server);
         var relay = require(path.resolve('backend/io/SocketRelay'));
 
-        var server_port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
+        var server_port = process.env.OPENSHIFT_NODEJS_PORT || 8000;
         var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || SERVER_ADDRESS;
 
         app.use("/", express.static(__dirname + '/frontend/'));
@@ -26,6 +27,24 @@ require('dns').lookup(require('os').hostname(), function (err, add, fam) {
         });
     }
 });
+*/
+
+
+//var SERVER_ADDRESS = add;
+var express = require('express');
+var app = express();
+var server = require('http').createServer(app);
+
+var server_port = process.env.OPENSHIFT_NODEJS_PORT || 8000;
+var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '22.155.0.6';
+
+app.use("/", express.static(__dirname + '/frontend/'));
+
+
+server.listen(server_port, server_ip_address, function(){
+    console.log("Listening on " + server_ip_address + ", server_port " + server_port);
+});
+
 
 function terminate (sig) {
     if (typeof sig === "string") {
