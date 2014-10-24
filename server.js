@@ -116,6 +116,11 @@ var SampleApp = function() {
         self.app = express.createServer();
 
         self.app.use("/", express.static(__dirname + '/frontend/'));
+
+        //  Add handlers for the app (from the routes).
+        for (var r in self.routes) {
+            self.app.get(r, self.routes[r]);
+        }
     };
 
 
