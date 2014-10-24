@@ -1,5 +1,5 @@
 {
-	"name":"Websockets demo",
+	"name":"websockets-demo",
 	"description":"node js websockets example",
 	"version":"0.1.0",
     "author": {

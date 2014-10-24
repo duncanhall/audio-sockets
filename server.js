@@ -21,7 +21,7 @@ require('dns').lookup(require('os').hostname(), function (err, add, fam) {
         app.use("/", express.static(__dirname + '/frontend/'));
 
         server.listen(server_port, server_ip_address, function(){
-            console.log("Listening on " + server_ip_address + ", server_port " + port);
+            console.log("Listening on " + server_ip_address + ", server_port " + server_port);
             relay.init(io);
         });
     }
