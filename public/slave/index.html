@@ -6,15 +6,15 @@
 	var socket = null;
     var ClientCommand = {};
 
-    ClientCommand.HAND_SHAKE = 'as-cc:hs';
-    ClientCommand.START = 'as-cc:start';
-    ClientCommand.STOP = 'as-cc:stop';
-    ClientCommand.CHANGE = 'as-cc:chng';
-    ClientCommand.DISCONNECT = 'as-cc:dc';
+    var HAND_SHAKE = '<%= settings.CMD_HAND_SHAKE %>';
+    var START = '<%= settings.CMD_START %>';
+    var STOP = '<%= settings.CMD_STOP %>';
+    var CHANGE = '<%= settings.CMD_CHANGE %>';
+    var DISCONNECT = '<%= settings.CMD_DISCONNECT %>';
 
 	function onload()
 	{
-		socket = io.connect('http://lab-duncanhall.rhcloud.com:8000');
+		socket = io.connect('<%= settings.connectionURL %>');
 
 		socket.on("connect", function() {
 			socket.emit("id", "slave");
@@ -28,24 +28,24 @@
 			switch(cmd)
 			{
 
-				case ClientCommand.HAND_SHAKE:
+				case HAND_SHAKE:
                     //Connection
 					break;
 
-				case ClientCommand.START:
+				case START:
 
 					break;
 
-				case ClientCommand.STOP:
+				case STOP:
 
 					break;					
 
-				case ClientCommand.CHANGE:
+				case CHANGE:
                     x1 = data.x * window.innerWidth;
                     y1 = data.y * window.innerHeight;
 					break;
 
-				case ClientCommand.DISCONNECT:
+				case DISCONNECT:
 
 					break;
 			}

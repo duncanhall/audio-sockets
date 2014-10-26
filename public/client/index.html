@@ -6,18 +6,14 @@
     <script src="/client/js/MultiDirectionControl.js"></script>
     <script>
 
-        var ClientCommand = {};
-        ClientCommand.HAND_SHAKE = 'as-cc:hs';
-        ClientCommand.START = 'as-cc:start';
-        ClientCommand.STOP = 'as-cc:stop';
-        ClientCommand.CHANGE = 'as-cc:chng';
-        ClientCommand.DISCONNECT = 'as-cc:dc';
-
-        var SERVER = 'http://lab-duncanhall.rhcloud.com:8000';
+        var SERVER = '<%= settings.connectionURL %>';
         var CMD_ID = 'cmd-client';
-        var CMD_UP = ClientCommand.STOP;
-        var CMD_DOWN = ClientCommand.START;
-        var CMD_CHANGE = ClientCommand.CHANGE;
+        var HAND_SHAKE = '<%= settings.CMD_HAND_SHAKE %>';
+        var CMD_DOWN = '<%= settings.CMD_START %>';
+        var CMD_UP = '<%= settings.CMD_STOP %>';
+        var CMD_CHANGE = '<%= settings.CMD_CHANGE %>';
+        var DISCONNECT = '<%= settings.CMD_DISCONNECT %>';
+
         var touchPad = null;
 
         function onload()
@@ -30,7 +26,7 @@
                 socket.emit("id", "client");
             });
 
-            socket.on(ClientCommand.HAND_SHAKE, function() {
+            socket.on(HAND_SHAKE, function() {
                 //Connection
             });
 

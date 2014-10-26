@@ -1,6 +1,7 @@
 #!/bin/env node
 
 var path = require('path');
+var ConnectionSettings = require(path.resolve('server/io/ConnectionSettings'));
 
 require('dns').lookup(require('os').hostname(), function (err, add, fam) {
 
@@ -16,9 +17,12 @@ require('dns').lookup(require('os').hostname(), function (err, add, fam) {
         var app = express();
         var server = require('http').createServer(app);
         var io = require('socket.io').listen(server);
-        var relay = require(path.resolve('backend/io/SocketRelay'));
+        var relay = require(path.resolve('server/io/SocketRelay'));
 
         app.use("/", express.static(__dirname + '/public/'));
+        app.engine('html', require('ejs').renderFile);
+        app.set('view engine', 'html');
+        app.set('views', 'public');
 
         app.get('/', function (req, res) {
             var ua = req.headers['user-agent'];
@@ -26,7 +30,8 @@ require('dns').lookup(require('os').hostname(), function (err, add, fam) {
             var options = {};
             options.root = isMobile ? __dirname + '/public/client' : __dirname + '/public/slave';
 
-            res.sendFile('index.html', options);
+            var settings = new ConnectionSettings(PORT, IP_ADDR);
+            res.render(options.root + '/index', {settings:settings});
         });
 
         server.listen(PORT, IP_ADDR, function () {
