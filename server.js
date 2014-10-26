@@ -30,11 +30,10 @@ require('dns').lookup(require('os').hostname(), function (err, add, fam) {
         app.get('/', function (req, res) {
             var ua = req.headers['user-agent'];
             var isMobile = (/mobile/i.test(ua));
-            var options = {};
-            options.root = isMobile ? __dirname + '/public/client' : __dirname + '/public/slave';
-
+            var parent = isMobile ? __dirname + '/public/client' : __dirname + '/public/slave';
             var settings = new ConnectionSettings(PORT, IP_ADDR, IS_DEBUG);
-            res.render(options.root + '/index', {settings:settings});
+
+            res.render(parent + '/index', {settings:settings});
         });
 
         server.listen(PORT, IP_ADDR, function () {
