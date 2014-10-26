@@ -1,6 +1,6 @@
 {
   "name": "websockets-demo",
-  "description": "node js websockets example",
+  "description": "WebScoket Experiment",
   "version": "0.1.0",
   "author": {
     "name": "Duncan Hall",
@@ -17,9 +17,8 @@
     "npm": ">= 1.3.0"
   },
   "dependencies": {
-    "ejs": "^1.0.0",
-    "express": "^4.10.0",
-    "socket.io": "0.9.15"
+    "express": "4.10.0",
+    "socket.io": "1.1.0"
   },
   "devDependencies": {
     "grunt": "0.4.4",
