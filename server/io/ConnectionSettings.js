@@ -1,8 +1,13 @@
 'use strict';
 
-var ConnectionSettings = function (port, ip) {
+var ConnectionSettings = function (port, ip, debug) {
 
-    this.connectionURL = 'http://' + ip + ':' + port;
+    if (debug) {
+        this.connectionURL = 'http://' + ip + ':' + port;
+    }
+    else {
+        this.connectionURL = 'http://lab-duncanhall.rhcloud.com:8000';
+    }
 
     this.CMD_HAND_SHAKE = 'chs';
     this.CMD_START = 'csr';

@@ -1,5 +1,8 @@
 #!/bin/env node
 
+var IS_DEBUG = process.env.NODE_JS_ENV !== 'production';
+process.env.NODE_ENV = IS_DEBUG ? 'development' : 'production';
+
 var path = require('path');
 var ConnectionSettings = require(path.resolve('server/io/ConnectionSettings'));
 
@@ -30,7 +33,7 @@ require('dns').lookup(require('os').hostname(), function (err, add, fam) {
             var options = {};
             options.root = isMobile ? __dirname + '/public/client' : __dirname + '/public/slave';
 
-            var settings = new ConnectionSettings(PORT, IP_ADDR);
+            var settings = new ConnectionSettings(PORT, IP_ADDR, IS_DEBUG);
             res.render(options.root + '/index', {settings:settings});
         });
 
