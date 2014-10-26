@@ -33,30 +33,6 @@ require('dns').lookup(require('os').hostname(), function (err, add, fam) {
             console.log("Listening on " + IP_ADDR + ", server_port " + PORT);
             relay.init(io);
         });
-
-        /*
-         var SERVER_ADDRESS = add;
-
-         var express = require('express');
-         var app = express();
-         var server = require('http').createServer(app);
-         var io = require('socket.io').listen(server);
-         var relay = require(path.resolve('backend/io/SocketRelay'));
-
-         var server_port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
-         var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || SERVER_ADDRESS;
-
-         app.use("/", express.static(__dirname + '/frontend/'));
-
-         for (var r in self.routes) {
-         app.get(r, self.routes[r]);
-         }
-
-         server.listen(server_port, server_ip_address, function(){
-         console.log("Listening on " + server_ip_address + ", server_port " + server_port);
-         relay.init(io);
-         });
-         */
     }
 });
 
