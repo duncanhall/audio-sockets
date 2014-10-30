@@ -39,18 +39,19 @@ else {
  */
 function start() {
 
-    app.use("/", express.static(__dirname + '/public/'));
     app.engine('html', require('ejs').renderFile);
     app.set('view engine', 'html');
     app.set('views', 'public');
+    app.use("/", express.static(__dirname + '/public/'));
 
-    app.get('/', function (req, res) {
+    app.all('/*', function (req, res) {
         var ua = req.headers['user-agent'];
         var isMobile = (/mobile/i.test(ua));
+        isMobile = true;
         var parent = isMobile ? __dirname + '/public/client' : __dirname + '/public/slave';
         var settings = new ConnectionSettings(PORT, IP_ADDR, IS_DEBUG);
 
-        res.render(parent + '/index', {settings:settings});
+        res.render(parent + '/index', {settings:settings, root:parent});
     });
 
     server.listen(PORT, IP_ADDR, function () {
@@ -64,10 +65,10 @@ function start() {
  */
 function exit(sig){
     if (typeof sig === "string") {
-        console.log('%s: Received %s - terminating sample app ...', Date(Date.now()), sig);
+        console.log('%s: Received %s - terminating app...', new Date(Date.now()), sig);
         process.exit(1);
     }
-    console.log('%s: Node server stopped.', Date(Date.now()));
+    console.log('%s: Node server stopped.', new Date(Date.now()));
 }
 
 /**

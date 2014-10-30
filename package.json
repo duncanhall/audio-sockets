@@ -1,6 +1,6 @@
 {
   "name": "websockets-demo",
-  "description": "WebScoket Experiment",
+  "description": "WebSocket Experiment",
   "version": "0.1.0",
   "author": {
     "name": "Duncan Hall",
@@ -20,11 +20,5 @@
     "ejs": "1.0.0",
     "express": "4.10.0",
     "socket.io": "1.1.0"
-  },
-  "devDependencies": {
-    "grunt": "0.4.4",
-    "grunt-contrib-jshint": "0.10.0",
-    "grunt-contrib-nodeunit": "0.3.3",
-    "grunt-contrib-uglify": "0.4.0"
   }
 }

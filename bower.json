@@ -1,0 +1,26 @@
+{
+  "name": "audio-sockets",
+  "version": "0.1.0",
+  "homepage": "https://github.com/duncanhall/audio-sockets",
+  "authors": [
+    "Duncan Hall <himself@duncanhall.net>"
+  ],
+  "main": "server.js",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    ".openshift"
+  ],
+  "dependencies": {
+    "angular": "~1.3.0",
+    "lodash": "~2.4.1",
+    "bootstrap": "~3.3.0",
+    "angular-ui-router": "~0.2.11",
+    "bootstrap-material-design": "~0.1.4"
+  }
+}
