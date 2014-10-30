@@ -12,6 +12,9 @@
     var CHANGE = '<%= settings.CMD_CHANGE %>';
     var DISCONNECT = '<%= settings.CMD_DISCONNECT %>';
 
+    var callibrationPoints = [];
+    var boundary = {};
+
 	function onload()
 	{
 		socket = io.connect('<%= settings.connectionURL %>');
@@ -33,6 +36,11 @@
 					break;
 
 				case START:
+                    callibrationPoints.push(data.orientation);
+
+                    if (callibrationPoints.length === 4) {
+                        setPoints();
+                    }
 
 					break;
 
@@ -41,8 +49,14 @@
 					break;					
 
 				case CHANGE:
-                    x1 = data.x * window.innerWidth;
-                    y1 = data.y * window.innerHeight;
+                    var x = clamp(data.x, boundary.minX, boundary.maxX);
+                    var y = clamp(data.y, boundary.minY, boundary.maxY);
+
+                    var dx = (x - boundary.minX) / (boundary.maxX - boundary.minX);
+                    var dy = (y - boundary.minY) / (boundary.maxY - boundary.minY);
+
+                    y1 = (1 - dx) * window.innerHeight;
+                    x1 = dy * window.innerWidth;
 					break;
 
 				case DISCONNECT:
@@ -50,6 +64,31 @@
 					break;
 			}
 		});
+
+        var clamp = function(num, min, max) {
+            return num < min ? min : (num > max ? max : num);
+        };
+
+        function setPoints () {
+
+            var minX = Number.MAX_VALUE;
+            var minY = Number.MAX_VALUE;
+            var maxX = Number.MIN_VALUE;
+            var maxY = Number.MIN_VALUE;
+
+            callibrationPoints.forEach(function (orientation) {
+                minX = orientation.x < minX ? orientation.x : minX;
+                minY = orientation.y < minY ? orientation.y : minY;
+                maxX = orientation.x > maxX ? orientation.x : maxX;
+                maxY = orientation.y > maxY ? orientation.y : maxY;
+            });
+
+            boundary.minX = minX;
+            boundary.maxX = maxX;
+            boundary.minY = minY;
+            boundary.maxY = maxY;
+        }
+
 
         var width = window.innerWidth;
         var height = window.innerHeight;

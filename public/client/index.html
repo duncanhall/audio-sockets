@@ -2,6 +2,7 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="/socket.io/socket.io.js"></script>
+    <script src="/client/js/lodash.min.js"></script>
     <script src="/client/js/Class.js"></script>
     <script src="/client/js/MultiDirectionControl.js"></script>
     <script>
@@ -15,12 +16,40 @@
         var DISCONNECT = '<%= settings.CMD_DISCONNECT %>';
 
         var touchPad = null;
+        var calibrated = 0;
+        var isCalibrated = false;
+
 
         function onload()
     	{			
             touchPad = document.getElementById('touchPad');
             control = new MultiDirectionControl(touchPad);
             socket = io.connect(SERVER);
+
+            var orientation = {};
+
+            window.addEventListener("deviceorientation", _.debounce(handleOrientation, 300, {maxWait:500}), false);
+
+            function handleOrientation(event) {
+
+                var z = event.alpha;
+                var x = event.beta;
+                var y = event.gamma;
+
+                if (isCalibrated) {
+                    send({cmd:CMD_CHANGE, z:z, x:x, y:y});
+                }
+                else {
+                    orientation.z = z;
+                    orientation.x = x;
+                    orientation.y = y;
+                }
+            }
+
+            function calibrate () {
+
+                isCalibrated = true;
+            }
 
             socket.on("connect", function() { 
                 socket.emit("id", "client");
@@ -30,17 +59,22 @@
                 //Connection
             });
 
-            control.addEventListener(MultiDirectionControl.TOUCH_START, function() { 
-                send({cmd:CMD_DOWN}); 
+            control.addEventListener(MultiDirectionControl.TOUCH_START, function() {
+                if (!isCalibrated) {
+                    send({cmd:CMD_DOWN, orientation:orientation});
+                    calibrated++;
+                    isCalibrated = calibrated === 4;
+                }
             });
 
             control.addEventListener(MultiDirectionControl.TOUCH_END, function() { 
                 send({cmd:CMD_UP});
             });
-   
+
+            /*
             control.addEventListener(MultiDirectionControl.CHANGE, function(cx, cy) {
                 send({cmd:CMD_CHANGE, x:cx, y:cy});
-            });
+            });*/
         }			
 
     	function send(data)
