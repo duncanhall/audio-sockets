@@ -1,54 +1,9 @@
-body, html
-{
-    background-color: #4D4D4D;
+.center-row {
+    display:table;
+    height: 600px;
 }
-
-#container
-{
-    position: absolute;
-    top: 50%;
-    margin-top: -100px;
-    left: 0;
-    width: 100%;
-}
-
-#touchPad
-{
-    width: 160px;
-    height: 160px;
-    border-radius: 50%;
-    background-color: #000000;
-    margin: 0 auto 0 auto;
-    -webkit-user-select: none;
-}
-
-#touchPad.touchdown
-{
-    -webkit-transition: background-color 200ms linear;
-    -moz-transition: background-color 200ms linear;
-    -o-transition: background-color 200ms linear;
-    -ms-transition: background-color 200ms linear;
-    transition: background-color 200ms linear;                  
-}
-
-#touchPad.touchup
-{
-    background-color: #000000;
-    -webkit-transition: background-color 200ms linear;
-    -moz-transition: background-color 200ms linear;
-    -o-transition: background-color 200ms linear;
-    -ms-transition: background-color 200ms linear;
-    transition: background-color 200ms linear;     
-}
-
-.touch
-{
-    border-radius: 50%;
-    width: 60px;
-    height: 60px;
-    background-color: #000000;
-    visibility: hidden;
-    position: absolute;
-    z-index: 100;
-    -webkit-user-select: none;
+.center {
+    display:table-cell;
+    vertical-align:middle;
+    float:none;
 }

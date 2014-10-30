@@ -47,8 +47,7 @@ function start() {
     app.all('/*', function (req, res) {
         var ua = req.headers['user-agent'];
         var isMobile = (/mobile/i.test(ua));
-        isMobile = true;
-        var parent = isMobile ? __dirname + '/public/client' : __dirname + '/public/slave';
+        var parent = isMobile ? __dirname + '/public/client' : __dirname + '/public/display';
         var settings = new ConnectionSettings(PORT, IP_ADDR, IS_DEBUG);
 
         res.render(parent + '/index', {settings:settings, root:parent});
