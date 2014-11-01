@@ -1,8 +1,21 @@
 'use strict';
 
 angular.module('DisplayController')
-    .controller('HomeCtrl', ['socketController', function (socketController) {
+    .controller('HomeCtrl', ['$scope', 'socketController', 'serverConfig', function ($scope, socketController, serverConfig) {
 
-        socketController.connect();
+        function onData(data) {
+
+            switch (data.cmd) {
+
+                case serverConfig.cmdHandshake:
+                    $scope.id = data.id;
+                    break;
+
+            }
+
+            $scope.$apply();
+        }
+
+        socketController.connect(onData);
 
     }]);

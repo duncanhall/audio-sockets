@@ -1,8 +1,11 @@
 
-var CMD_CLIENT = 'cmd-client';
-var HAND_SHAKE = 'as-cc:hs';
-var DISCONNECT = 'as-cc:dc';
+var path = require('path');
+var cs = require(path.resolve('server/io/ConnectionSettings'));
+var settings = new cs();
 
+var CMD_CLIENT = 'cmd-client';
+var HAND_SHAKE = settings.CMD_HAND_SHAKE;
+var DISCONNECT = settings.CMD_DISCONNECT;
 
 function init (io) {
 
@@ -28,9 +31,10 @@ function init (io) {
          */
         socket.on('id', function(data) {
 
-            if (data == 'slave') {
+            if (data == 'display') {
                 slaveID = socket.id;
                 slave = socket;
+                relayClientCommand(socket.id, {cmd:HAND_SHAKE});
             }
 
             if (data == 'client') {

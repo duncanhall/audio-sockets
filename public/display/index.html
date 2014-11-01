@@ -9,7 +9,6 @@
     <link href="/bower_components/bootstrap-material-design/dist/css/ripples.min.css" rel="stylesheet">
     <link href="/bower_components/bootstrap-material-design/dist/css/material-wfont.min.css" rel="stylesheet">
 
-
     <script src="/bower_components/lodash/dist/lodash.min.js"></script>
     <script src="/bower_components/angular/angular.min.js"></script>
     <script src="/bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
@@ -25,58 +24,35 @@
 </head>
 <body ng-app="DisplayController">
 
-<div class="container" ui-view=""></div>
+    <div class="container" ui-view=""></div>
 
-<script src="/bower_components/jquery/dist/jquery.min.js"></script>
-<script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-<script src="/bower_components/bootstrap-material-design/dist/js/ripples.min.js"></script>
-<script src="/bower_components/bootstrap-material-design/dist/js/material.min.js"></script>
+    <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="/bower_components/bootstrap-material-design/dist/js/ripples.min.js"></script>
+    <script src="/bower_components/bootstrap-material-design/dist/js/material.min.js"></script>
 
-<script src="/common/js/SocketService.js"></script>
-<script src="/display/js/app.js"></script>
-<script src="/display/js/controllers/home.js"></script>
+    <script src="/common/js/SocketService.js"></script>
+    <script src="/display/js/app.js"></script>
+    <script src="/display/js/controllers/home.js"></script>
 
-<script>
-    $(document).ready(function() {
-        $.material.init();
+    <script>
+        angular.module('socketService').config(['serverConfigProvider', function(serverConfig) {
+            serverConfig.set({
+                connectionType: 'display',
+                connectionUrl: '<%= settings.connectionURL %>',
+                cmdHandshake: '<%= settings.CMD_HAND_SHAKE %>',
+                cmdStart: '<%= settings.CMD_START %>',
+                cmd_stop: '<%= settings.CMD_STOP %>',
+                cmdChange: '<%= settings.CMD_CHANGE %>',
+                cmdDisconnect: '<%= settings.CMD_DISCONNECT %>'
+            });
+        }]);
+    </script>
 
-        var socket = null;
-        var ClientCommand = {};
-        var HAND_SHAKE = '<%= settings.CMD_HAND_SHAKE %>';
-        var START = '<%= settings.CMD_START %>';
-        var STOP = '<%= settings.CMD_STOP %>';
-        var CHANGE = '<%= settings.CMD_CHANGE %>';
-        var DISCONNECT = '<%= settings.CMD_DISCONNECT %>';
-
-        socket = io.connect('<%= settings.connectionURL %>');
-
-        socket.on("connect", function() {
-            socket.emit("id", "slave");
+    <script>
+        $(document).ready(function() {
+            $.material.init();
         });
-
-        socket.on("cmd-client", function(data) {
-            var id = data.id;
-            var cmd = data.cmd;
-            switch(cmd)
-            {
-                case HAND_SHAKE:
-                    console.log('Connected');
-                    break;
-                case START:
-                    console.log('Start');
-                    break;
-                case STOP:
-                    console.log('Stop');
-                    break;
-                case CHANGE:
-                    console.log('Change: ' + data.x);
-                    break;
-                case DISCONNECT:
-                    console.log('Disconnect');
-                    break;
-            }
-        });
-    });
-</script>
+    </script>
 </body>
 </html>
