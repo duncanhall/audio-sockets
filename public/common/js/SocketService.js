@@ -7,13 +7,14 @@ angular.module('socketService').factory('socketController', ['serverConfig', fun
     var socket = null;
     var listeners = [];
     var isConnected = false;
+    var roomId = '';
 
     function connect (listener) {
 
         listeners.push(listener);
         if (isConnected) return;
 
-        socket = io.connect(serverConfig.connectionUrl);
+        socket = io(serverConfig.connectionUrl);
 
         socket.on("connect", function() {
             isConnected = true;
@@ -25,8 +26,19 @@ angular.module('socketService').factory('socketController', ['serverConfig', fun
         });
     }
 
+    function join (room) {
+        roomId = room;
+        socket.emit(serverConfig.cmdPairing, roomId);
+    }
+
+    function sendToRoom (data) {
+        socket.to(roomId).emit(data);
+    }
+
     return {
-        connect: connect
+        connect: connect,
+        join: join,
+        sendToRoom: sendToRoom
     }
 
 }])

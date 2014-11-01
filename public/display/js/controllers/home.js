@@ -5,10 +5,16 @@ angular.module('DisplayController')
 
         function onData(data) {
 
+            console.dir(data);
+
             switch (data.cmd) {
 
                 case serverConfig.cmdHandshake:
                     $scope.id = data.id;
+                    break;
+
+                case serverConfig.cmdPairing:
+                    $scope.id = 'Connected';
                     break;
 
             }

@@ -1,6 +1,6 @@
 'use strict';
 
-var app = angular.module('MobileController', ['ui.router']);
+var app = angular.module('MobileController', ['ui.router', 'socketService']);
 
 app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
 

@@ -45,8 +45,11 @@ function start() {
     app.use("/", express.static(__dirname + '/public/'));
 
     app.all('/*', function (req, res) {
+
+        var forceMobile = req.query.mobile === '1';
         var ua = req.headers['user-agent'];
-        var isMobile = (/mobile/i.test(ua));
+        var isMobile = (/mobile/i.test(ua)) || forceMobile;
+
         var parent = isMobile ? __dirname + '/public/client' : __dirname + '/public/display';
         var settings = new ConnectionSettings(PORT, IP_ADDR, IS_DEBUG);
 

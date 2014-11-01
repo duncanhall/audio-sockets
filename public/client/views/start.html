@@ -4,10 +4,10 @@
             <h1>Connect</h1>
             <form role="form">
                 <div class="form-group">
-                    <input type="text" class="form-control" id="inputCode" placeholder="Enter code">
+                    <input type="text" ng-model="connectionId" class="form-control" id="inputCode" placeholder="Enter code">
                 </div>
                 <br />
-                <button type="submit" class="btn btn-lg btn-success">Start</button>
+                <button type="submit" ng-click="submit();" class="btn btn-lg btn-success">Start</button>
             </form>
         </div>
     </div>

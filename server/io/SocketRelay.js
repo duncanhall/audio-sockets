@@ -5,6 +5,7 @@ var settings = new cs();
 
 var CMD_CLIENT = 'cmd-client';
 var HAND_SHAKE = settings.CMD_HAND_SHAKE;
+var PAIRING = settings.CMD_PAIRING;
 var DISCONNECT = settings.CMD_DISCONNECT;
 
 function init (io) {
@@ -31,17 +32,28 @@ function init (io) {
          */
         socket.on('id', function(data) {
 
-            if (data == 'display') {
+            if (data === 'display') {
                 slaveID = socket.id;
                 slave = socket;
                 relayClientCommand(socket.id, {cmd:HAND_SHAKE});
             }
 
-            if (data == 'client') {
-                socket.emit(HAND_SHAKE);
-                relayClientCommand(socket.id, {cmd:HAND_SHAKE});
+            if (data === 'client') {
                 numClients++;
+                socket.emit(CMD_CLIENT, {cmd:HAND_SHAKE});
             }
+        });
+
+        /*
+         * Receive a client command
+         */
+        socket.on(PAIRING, function(roomId) {
+            socket.join(roomId, function (error) {
+
+                console.log('Joined room, err: ' + error);
+                socket.to(roomId).emit(CMD_CLIENT, {cmd:PAIRING});
+
+            });
         });
 
         /*

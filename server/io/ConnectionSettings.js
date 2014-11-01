@@ -14,6 +14,7 @@ var ConnectionSettings = function (port, ip, debug) {
     this.CMD_STOP = 'csp';
     this.CMD_CHANGE = 'ccn';
     this.CMD_DISCONNECT = 'cdc';
+    this.CMD_PAIRING = 'cpr';
 };
 
 
