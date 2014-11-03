@@ -18,10 +18,12 @@ angular.module('MobileController')
             switch (data.cmd) {
 
                 case serverConfig.cmdHandshake:
-                    console.log('GOT HANDSHAKE, joining....');
                     $scope.id = data.id;
-
                     socketController.join($scope.connectionId);
+                    break;
+
+                case serverConfig.cmdDeviceConnect:
+
                     break;
 
             }

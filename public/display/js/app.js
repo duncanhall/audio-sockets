@@ -7,10 +7,10 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
     $locationProvider.html5Mode(true);
 
     $stateProvider
-        .state('home', {
+        .state('connection', {
             url: "/",
-            templateUrl: "display/views/home.html",
-            controller: 'HomeCtrl'
+            templateUrl: "display/views/connect.html",
+            controller: 'ConnectionCtrl'
         });
 
     $urlRouterProvider.otherwise("/");

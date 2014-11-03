@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('DisplayController')
-    .controller('HomeCtrl', ['$scope', 'socketController', 'serverConfig', function ($scope, socketController, serverConfig) {
+    .controller('ConnectionCtrl', ['$scope', 'socketController', 'serverConfig', function ($scope, socketController, serverConfig) {
 
         function onData(data) {
 

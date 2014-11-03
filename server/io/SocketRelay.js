@@ -1,3 +1,4 @@
+'use strict';
 
 var path = require('path');
 var cs = require(path.resolve('server/io/ConnectionSettings'));
@@ -7,52 +8,57 @@ var CMD_CLIENT = 'cmd-client';
 var HAND_SHAKE = settings.CMD_HAND_SHAKE;
 var PAIRING = settings.CMD_PAIRING;
 var DISCONNECT = settings.CMD_DISCONNECT;
+var DEVICE_CONNECTED = settings.CMD_DEVICE_CONNECT;
 
 function init (io) {
 
-    var slaveID = 0;
-    var slave;
-    var numClients = 0;
+    var numHosts = 0;
+    var hosts = [];
+
 
     /*
      * Define listeners for each socket that connects
      */
     io.sockets.on('connection', function (socket) {
 
-        /*
-         * Receive a client command
-         */
-        socket.on(CMD_CLIENT, function(cmd) {
-
-            relayClientCommand(socket.id, cmd);
-        });
 
         /*
          * Socket is identifying as either client or slave
          */
         socket.on('id', function(data) {
 
+            var handshake = {cmd:HAND_SHAKE};
+
             if (data === 'display') {
-                slaveID = socket.id;
-                slave = socket;
-                relayClientCommand(socket.id, {cmd:HAND_SHAKE});
+                var connectionId = createConnectionId(numHosts);
+
+                socket.connectionId = connectionId;
+                socket.isHost = true;
+
+                hosts[connectionId] = socket;
+                numHosts++;
+                handshake.id = socket.connectionId;
             }
 
-            if (data === 'client') {
-                numClients++;
-                socket.emit(CMD_CLIENT, {cmd:HAND_SHAKE});
-            }
+            socket.emit(CMD_CLIENT, handshake);
         });
 
         /*
          * Receive a client command
          */
-        socket.on(PAIRING, function(roomId) {
+        socket.on(PAIRING, function(connectionId) {
+
+            var roomId = getSocketIdByConnectionId(connectionId);
+
             socket.join(roomId, function (error) {
-
-                console.log('Joined room, err: ' + error);
-                socket.to(roomId).emit(CMD_CLIENT, {cmd:PAIRING});
-
+                if (error == null) {
+                    socket.roomId = roomId;
+                    socket.to(roomId).emit(CMD_CLIENT, {cmd:PAIRING});
+                    socket.emit(CMD_CLIENT, {cmd:DEVICE_CONNECTED});
+                }
+                else {
+                    console.error('Could not join room: ' + error);
+                }
             });
         });
 
@@ -61,29 +67,43 @@ function init (io) {
          */
         socket.on('disconnect', function() {
 
-            if (socket.id == slaveID) {
-                slaveID = 0;
-                slave = undefined;
+            if (socket.isHost) {
+                hosts[socket.connectionId] = null;
+                delete hosts[socket.connectionId];
+                numHosts--;
             }
             else {
-                numClients--;
-                relayClientCommand(socket.id, {cmd:DISCONNECT});
+                console.log('Client disconnected');
             }
         });
 
     });
 
-    /*
-     * Relay client commands to the slave
+    /**
+     *
+     * @param socketId
+     * @returns {string}
      */
-    var relayClientCommand = function (id, cmd) {
+    function createConnectionId (socketId) {
+        return new Buffer(String(socketId)).toString('base64');
+    }
 
-        if (slave != undefined)
-        {
-            cmd.id = String(id);
-            slave.emit(CMD_CLIENT, cmd);
+    /**
+     *
+     * @param connectionId
+     * @returns {*}
+     */
+    function getSocketIdByConnectionId (connectionId) {
+
+        var hostSocket = hosts[connectionId];
+
+        if (hostSocket !== undefined) {
+            return hostSocket.id;
         }
-    };
+        else {
+            console.error('Could not find host with connection ID = ' + connectionId);
+        }
+    }
 
 }
 

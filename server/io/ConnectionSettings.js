@@ -15,6 +15,7 @@ var ConnectionSettings = function (port, ip, debug) {
     this.CMD_CHANGE = 'ccn';
     this.CMD_DISCONNECT = 'cdc';
     this.CMD_PAIRING = 'cpr';
+    this.CMD_DEVICE_CONNECT = 'cdv';
 };
 
 
