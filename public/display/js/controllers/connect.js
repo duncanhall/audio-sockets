@@ -1,25 +1,23 @@
 'use strict';
 
 angular.module('DisplayController')
-    .controller('ConnectionCtrl', ['$scope', 'socketController', 'serverConfig', function ($scope, socketController, serverConfig) {
+    .controller('ConnectionCtrl', ['$scope', '$location', 'socketController', 'serverConfig', function ($scope, $location, socketController, serverConfig) {
 
         function onData(data) {
-
-            console.dir(data);
 
             switch (data.cmd) {
 
                 case serverConfig.cmdHandshake:
                     $scope.id = data.id;
+                    $scope.$apply();
                     break;
 
                 case serverConfig.cmdPairing:
-                    $scope.id = 'Connected';
+                    $location.path('/connected');
+                    $scope.$apply();
                     break;
 
             }
-
-            $scope.$apply();
         }
 
         socketController.connect(onData);

@@ -11,6 +11,11 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
             url: "/",
             templateUrl: "display/views/connect.html",
             controller: 'ConnectionCtrl'
+        })
+        .state('home', {
+            url: "/connected",
+            templateUrl: "display/views/home.html",
+            controller: 'HomeCtrl'
         });
 
     $urlRouterProvider.otherwise("/");
